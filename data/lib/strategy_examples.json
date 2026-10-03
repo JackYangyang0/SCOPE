@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "examples": {
+    "fp32_vector_tile_load_v1": {
+      "example_id": "fp32_vector_tile_load_v1",
+      "regions": ["INDEX_MAPPING", "GLOBAL_TO_SHARED_LOAD", "NEXT_TILE_LOAD", "SHARED_DECL"],
+      "kind": "adaptable_code_fragment",
+      "validation_status": "reference_fragment_not_a_standalone_verified_kernel",
+      "applicability": ["FP32 row-major non-transposed global A/B", "As[stage][BK][BM] and Bs[stage][BK][BN] physical layouts", "16-byte aligned A/B bases; K and N divisible by 4", "Full tiles: M divisible by BM, N by BN, K by BK; BK and BN divisible by 4"],
+      "adaptation_rules": ["Use the current IR tile sizes, thread count and physical layout; never copy historical tile values.", "For warp-cooperative strategies preserve their required warp ownership and lane mapping; this CTA-strided fragment demonstrates coverage, not that warp-specific implementation.", "For A[stage][BM][BK], change the shared scatter to [am][ak+u].", "Instantiate at both initial and next-tile loads, with their correct stage and k_base.", "If alignment or divisibility is not proved, implement guarded vector paths and scalar tails rather than assuming the example applies.", "Shared scalar scatter here preserves global float4 loads; this is NOT an example of vectorized shared stores."],
+      "code_lines": [
+        "const int linear_tid = threadIdx.x + blockDim.x * (threadIdx.y + blockDim.y * threadIdx.z);",
+        "const int threads = blockDim.x * blockDim.y * blockDim.z;",
+        "for (int v = linear_tid; v < BM * (BK / 4); v += threads) {",
+        "    const int am = v / (BK / 4), ak = (v % (BK / 4)) * 4;",
+        "    const float4 av = *reinterpret_cast<const float4*>(&A[(tile_m0 + am) * K + k_base + ak]);",
+        "    As[stage][ak + 0][am] = av.x; As[stage][ak + 1][am] = av.y;",
+        "    As[stage][ak + 2][am] = av.z; As[stage][ak + 3][am] = av.w;",
+        "}",
+        "for (int v = linear_tid; v < BK * (BN / 4); v += threads) {",
+        "    const int bk = v / (BN / 4), bn = (v % (BN / 4)) * 4;",
+        "    const float4 bv = *reinterpret_cast<const float4*>(&B[(k_base + bk) * N + tile_n0 + bn]);",
+        "    Bs[stage][bk][bn + 0] = bv.x; Bs[stage][bk][bn + 1] = bv.y;",
+        "    Bs[stage][bk][bn + 2] = bv.z; Bs[stage][bk][bn + 3] = bv.w;",
+        "}"
+      ],
+      "verification_obligations": ["Each A/B tile element is initialized exactly once before compute", "Vector addresses are 16-byte aligned", "Both initial and subsequent tiles use compatible mappings", "Shared indices match the physical layout", "CTA-wide visibility barrier before consumers"]
+    },
+    "sync_double_buffer_v1": {
+      "example_id": "sync_double_buffer_v1",
+      "regions": ["SHARED_DECL", "GLOBAL_TO_SHARED_LOAD", "MAIN_LOOP", "NEXT_TILE_LOAD", "COMPUTE_INNER"],
+      "kind": "algorithm_sketch_with_explicit_placeholders",
+      "validation_status": "reference_schedule_not_a_standalone_verified_kernel",
+      "applicability": ["Synchronous two-stage shared-memory buffering", "Positive K divisible by BK", "All CTA threads execute the same barriers", "Two distinct complete A/B buffers fit the hardware allocation policy"],
+      "adaptation_rules": ["LOAD_TILE and COMPUTE_TILE below are placeholders: materialize their bodies using current kernel mapping, not unresolved function calls.", "This is a correctness-first synchronous lifetime example, not proof of memory/compute overlap.", "Do not apply this two-stage schedule as the implementation of a selected three/four-stage or cp.async strategy.", "Preserve the current accumulation mapping, alpha/beta epilogue and vector width.", "Do not mix this prologue/steady-state/drain protocol with a tile+1 prefetch guard. The loop below loads the current tile index and therefore executes its producer on every iteration."],
+      "code_lines": [
+        "LOAD_TILE(0, 0); // cooperative A/B loading into stage 0",
+        "__syncthreads();",
+        "for (int tile = 1; tile < K / BK; ++tile) {",
+        "    const int read_stage = (tile - 1) & 1;",
+        "    const int write_stage = tile & 1;",
+        "    COMPUTE_TILE(read_stage); // compute tile-1 exactly once",
+        "    LOAD_TILE(write_stage, tile * BK); // no additional last-tile guard",
+        "    __syncthreads(); // finish readers and publish the current tile",
+        "}",
+        "COMPUTE_TILE(((K / BK) - 1) & 1); // final drain"
+      ],
+      "verification_obligations": ["Two non-overlapping buffers", "First and last K tiles computed exactly once", "No buffer overwrite while readers remain", "No barrier inside thread-divergent output guards", "No whole-array assignments for stage switching"]
+    },
+    "cp_async_primitive_v1": {
+      "example_id": "cp_async_primitive_v1",
+      "regions": ["SHARED_DECL", "GLOBAL_TO_SHARED_LOAD", "NEXT_TILE_LOAD", "MAIN_LOOP"],
+      "kind": "instruction_protocol_fragment_not_multistage_scheduler",
+      "validation_status": "documentation_based_not_gpu_regression_validated",
+      "reference_url": "https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#data-movement-and-conversion-instructions-cp-async",
+      "applicability": ["sm_80 or newer with supporting toolchain", "src_global points to 16 valid global bytes", "dst_shared points to 16 allocated shared bytes; both addresses aligned to 16 bytes", "Direct contiguous copy, not a transpose or non-contiguous scatter"],
+      "adaptation_rules": ["src_global and dst_shared are placeholders for actual mapped pointers, not new undefined identifiers.", "For transposed A, use a compatible staging/layout transformation; a contiguous cp.async is not equivalent to the float4 K-to-M scatter example.", "The selected stage count still requires a real prologue/steady-state/drain schedule, buffer ownership and tail handling.", "wait_group 0 is a conservative completion example, not a performance-optimal multistage implementation.", "Every copying thread must commit/wait its own operations; CTA-wide synchronization is also needed before cross-thread consumption.", "Do not replace a selected cp.async strategy with synchronous float4 copies just to pass compilation."],
+      "code_lines": [
+        "const unsigned smem_addr = static_cast<unsigned>(__cvta_generic_to_shared(dst_shared));",
+        "asm volatile(\"cp.async.cg.shared.global [%0], [%1], 16;\" :: \"r\"(smem_addr), \"l\"(src_global) : \"memory\");",
+        "asm volatile(\"cp.async.commit_group;\" ::: \"memory\");",
+        "asm volatile(\"cp.async.wait_group 0;\" ::: \"memory\");",
+        "__syncthreads();"
+      ],
+      "verification_obligations": ["Actual async-copy instructions in the executed load path", "Mapped shared/global addresses and complete tile coverage", "Selected buffer stage count preserved", "Consumers wait for completion and CTA visibility", "Buffer lifetime, prologue, drain and tail correctness", "Compile, numerical tests and available sanitizer checks"]
+    },
+    "shared_dynamic_optin_v1": {
+      "example_id": "shared_dynamic_optin_v1",
+      "regions": ["SHARED_DECL", "LAUNCH_CONFIG"],
+      "kind": "coupled_device_host_fragment",
+      "validation_status": "reference_fragment_not_a_standalone_verified_kernel",
+      "applicability": ["FP32 As[2][BK][BM] and Bs[2][BK][BN], no padding or additional shared allocations", "Two-stage total exceeds static limit but is within probed opt-in limit", "Dynamic allocation permitted by the selected strategy contract"],
+      "adaptation_rules": ["Compute bytes from the actual padded physical shapes and selected stage count; the example has two stages and no padding.", "Device references and host launch configuration must change together.", "Use the real instantiated kernel symbol in cudaFuncSetAttribute; never silently reduce BK or buffer count.", "Report attribute failures; do not proceed with an invalid launch."],
+      "code_lines": [
+        "// Device SHARED_DECL:",
+        "extern __shared__ __align__(16) unsigned char storage[];",
+        "float (&As)[2][BK][BM] = *reinterpret_cast<float (*)[2][BK][BM]>(storage);",
+        "float (&Bs)[2][BK][BN] = *reinterpret_cast<float (*)[2][BK][BN]>(storage + 2 * BK * BM * sizeof(float));",
+        "// Host cuda_gemm, after defining the current launch constants:",
+        "const int bytes = 2 * BK * (BM + BN) * sizeof(float);",
+        "cudaError_t status = cudaFuncSetAttribute(gemm<BM, BN, BK, WM, WN, WMITER, WNITER, TM, TN>, cudaFuncAttributeMaxDynamicSharedMemorySize, bytes);",
+        "if (status != cudaSuccess) { fprintf(stderr, \"CUDA error: %s\\n\", cudaGetErrorString(status)); return; }",
+        "gemm<BM, BN, BK, WM, WN, WMITER, WNITER, TM, TN><<<grid, block, bytes>>>(M, N, K, alpha, A, B, beta, C);"
+      ],
+      "verification_obligations": ["Non-overlapping A/B storage across all stages", "Launch bytes match physical allocation", "Opt-in succeeds on actual device", "IR resource accounting matches code", "No missing error reporting include or wrong kernel signature"]
+    }
+  },
+  "strategy_bindings": {
+    "Reordering.CooperativeVectorLoadAB.float4": ["fp32_vector_tile_load_v1"],
+    "Reordering.WarpCooperativeLoadAB.float4": ["fp32_vector_tile_load_v1"],
+    "Vectorization.GlobalLoadAB.float4": ["fp32_vector_tile_load_v1"],
+    "Pipeline.DoubleBuffer.SharedAB": ["sync_double_buffer_v1"],
+    "Pipeline.DoubleBuffer.SharedAB.V1Enabled": ["sync_double_buffer_v1"],
+    "Pipeline.WarpAwareDoubleBuffer.SharedAB": ["sync_double_buffer_v1"],
+    "Pipeline.CpAsync.Multistage2.SharedAB": ["cp_async_primitive_v1"],
+    "Pipeline.CpAsync.Multistage3.SharedAB": ["cp_async_primitive_v1"],
+    "Pipeline.CpAsync.Multistage4.SharedAB": ["cp_async_primitive_v1"],
+    "Memory.SharedMemory.DynamicOptIn": ["shared_dynamic_optin_v1"]
+  }
+}

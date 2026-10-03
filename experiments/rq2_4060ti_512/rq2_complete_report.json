@@ -1,0 +1,117 @@
+{
+  "run_id": "rq2-4060ti-512-r1",
+  "shape": "512x512x512",
+  "rows": [
+    {
+      "variant": "full",
+      "provenance": "historical_reuse",
+      "phase1_terminal_chains": 3,
+      "phase1_accepted_chains": 3,
+      "phase1_acceptance_rate": 1.0,
+      "phase1_best_gflops": 6768.294,
+      "elapsed_seconds": null,
+      "llm_requests": null,
+      "llm_tokens": null,
+      "final_gflops": 10577.163333333334,
+      "source": "D:\\Paper-Code\\GEMM-Code-Generation\\SCOPE\\4060ti\\qwen3.5-397b-a17b\\512\\results\\check\\performance_unlock_summary.json"
+    },
+    {
+      "variant": "minus_state_in_prompt",
+      "provenance": "fresh_run",
+      "phase1_terminal_chains": 3,
+      "phase1_accepted_chains": 1,
+      "phase1_acceptance_rate": 0.333333,
+      "phase1_best_gflops": 5642.359507359333,
+      "final_gflops": 5985.934274760666,
+      "elapsed_seconds": 2542.09657,
+      "llm_requests": 162,
+      "llm_tokens": 2067666,
+      "source": "D:\\Paper-Code\\GEMM-Code-Generation\\SCOPE\\results\\experiments\\runs\\rq2-4060ti-512-r1\\minus_state_in_prompt\\rq2_ablation_record.json"
+    },
+    {
+      "variant": "intent_only_control",
+      "provenance": "interface_repaired_3_run_aggregate",
+      "phase1_terminal_chains": 8,
+      "phase1_accepted_chains": 2,
+      "phase1_acceptance_rate": 0.25,
+      "phase1_best_gflops": 6241.956060463333,
+      "final_gflops": 7755.739638245,
+      "elapsed_seconds": 2755.462243,
+      "llm_requests": 169.33333333333334,
+      "llm_tokens": 2248298.6666666665,
+      "source": "D:\\Paper-Code\\GEMM-Code-Generation\\SCOPE\\results\\experiments\\rq2-4060ti-512-r1-summary\\intent_only_repaired_summary.json"
+    },
+    {
+      "variant": "minus_local_checks",
+      "provenance": "fresh_run",
+      "phase1_terminal_chains": 3,
+      "phase1_accepted_chains": 3,
+      "phase1_acceptance_rate": 1.0,
+      "phase1_best_gflops": 5902.788068609667,
+      "final_gflops": 7469.909411715001,
+      "elapsed_seconds": 2900.96464,
+      "llm_requests": 172,
+      "llm_tokens": 3542035,
+      "source": "D:\\Paper-Code\\GEMM-Code-Generation\\SCOPE\\results\\experiments\\runs\\rq2-4060ti-512-r1\\minus_local_checks\\rq2_ablation_record.json"
+    },
+    {
+      "variant": "minus_stage_ordering",
+      "provenance": "fresh_run",
+      "phase1_terminal_chains": 3,
+      "phase1_accepted_chains": 2,
+      "phase1_acceptance_rate": 0.666667,
+      "phase1_best_gflops": 6045.233866833,
+      "final_gflops": 6911.715822051667,
+      "elapsed_seconds": 4762.928194,
+      "llm_requests": 184,
+      "llm_tokens": 3864580,
+      "source": "D:\\Paper-Code\\GEMM-Code-Generation\\SCOPE\\results\\experiments\\runs\\rq2-4060ti-512-r1\\minus_stage_ordering\\rq2_ablation_record.json"
+    },
+    {
+      "variant": "minus_feedback_optimization",
+      "provenance": "derived_from_shared_full_phase1_checkpoint",
+      "phase1_terminal_chains": 3,
+      "phase1_accepted_chains": 3,
+      "phase1_acceptance_rate": 1.0,
+      "phase1_best_gflops": 6768.294,
+      "elapsed_seconds": null,
+      "llm_requests": null,
+      "llm_tokens": null,
+      "final_gflops": 6478.41,
+      "source": "D:\\Paper-Code\\GEMM-Code-Generation\\SCOPE\\results\\experiments\\runs\\rq2-4060ti-512-r1\\minus_feedback_optimization\\phase3_from_full_p1\\summary.json"
+    },
+    {
+      "variant": "minus_parameter_search",
+      "provenance": "paired_seed_from_full_parameter_search_r4",
+      "phase1_terminal_chains": 3,
+      "phase1_accepted_chains": 3,
+      "phase1_acceptance_rate": 1.0,
+      "phase1_best_gflops": 6768.294,
+      "elapsed_seconds": 7.167688,
+      "llm_requests": 0,
+      "llm_tokens": 0,
+      "final_gflops": 8897.0725,
+      "source": "D:\\Paper-Code\\GEMM-Code-Generation\\SCOPE\\results\\experiments\\runs\\rq2-4060ti-512-r4\\parameter_search\\512x512x512\\search.json"
+    },
+    {
+      "variant": "full_parameter_search_r4",
+      "provenance": "exhaustive_from_shared_full_phase2_checkpoint",
+      "phase1_terminal_chains": 3,
+      "phase1_accepted_chains": 3,
+      "phase1_acceptance_rate": 1.0,
+      "phase1_best_gflops": 6768.294,
+      "elapsed_seconds": 11974.960099,
+      "llm_requests": 0,
+      "llm_tokens": 0,
+      "final_gflops": 9853.70625,
+      "source": "D:\\Paper-Code\\GEMM-Code-Generation\\SCOPE\\results\\experiments\\runs\\rq2-4060ti-512-r4\\parameter_search\\512x512x512\\search.json"
+    }
+  ],
+  "warnings": [
+    "Full and minus_parameter_search reuse an earlier archived run, as requested.",
+    "Fresh construction ablations were executed after the ablation instrumentation changes; compare historical Full with care.",
+    "Intent-only is the aggregate of three interface-repaired independent runs; failed runs are not encoded as zero throughput.",
+    "The historical Intent-only 0/0 record is retained only in intent_only_repaired_summary.json as interface-failure provenance.",
+    "minus_feedback_optimization starts from the archived Full Phase-1 code and was re-benchmarked in the current environment."
+  ]
+}

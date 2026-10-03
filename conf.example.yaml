@@ -1,0 +1,182 @@
+bounded_resource_unlock:
+  load_layout_trials: true
+  enabled: true
+llm:
+  provider: cmecloud
+  qwen:
+    api_key_env: QWEN_API_KEY
+    model: deepseek-v4-pro
+    base_url: https://api.deepseek.com
+    api_key: ''
+    selection_max_tokens: 2048
+    codegen_max_tokens: 4096
+    selection_timeout_seconds: 90
+    selection_max_retries: 3
+    max_retries: 5
+    temperature: 0.0
+    max_tokens: 4096
+    use_json_response_format: false
+    timeout_seconds: 180
+    codegen_timeout_seconds: 300
+    thinking: disabled
+    selection_thinking: disabled
+    codegen_thinking: disabled
+  deepseek:
+    api_key: ''
+    model: deepseek-v4-pro
+    base_url: https://api.deepseek.com
+    selection_max_tokens: 2048
+    codegen_max_tokens: 4096
+    selection_timeout_seconds: 90
+    selection_max_retries: 3
+    max_retries: 5
+    thinking: disabled
+    selection_thinking: disabled
+    codegen_thinking: disabled
+    api_key_env: DEEPSEEK_API_KEY
+    temperature: 0.0
+    max_tokens: 4096
+    use_json_response_format: false
+    timeout_seconds: 180
+    codegen_timeout_seconds: 300
+  chatgpt:
+    api_key: ''
+    model: ''
+    base_url: ''
+    api_key_env: OPENAI_API_KEY
+    temperature: 0.0
+    selection_max_tokens: 2048
+    codegen_max_tokens: 4096
+    selection_timeout_seconds: 90
+    selection_max_retries: 3
+    max_retries: 5
+    thinking: disabled
+    selection_thinking: disabled
+    codegen_thinking: disabled
+    max_tokens: 4096
+    use_json_response_format: false
+    timeout_seconds: 180
+    codegen_timeout_seconds: 300
+  cmecloud:
+    model: qwen3.5-397b-a17b
+    api_key_env: CMECLOUD_API_KEY
+    api_key: ''
+    base_url: https://zhenze-huhehaote.cmecloud.cn/v1
+    trust_env: false
+    temperature: 0.0
+    max_tokens: 8192
+    reasoning_effort: low
+    selection_max_tokens: 8192
+    selection_reasoning_effort: low
+    codegen_max_tokens: 16384
+    codegen_reasoning_effort: low
+    use_json_response_format: false
+    thinking: disabled
+    selection_thinking: disabled
+    codegen_thinking: disabled
+    timeout_seconds: 180
+    selection_timeout_seconds: 90
+    selection_max_retries: 3
+    codegen_timeout_seconds: 300
+    max_retries: 5
+execution:
+  chain_workers: 3
+  llm_max_concurrency: 3
+  compile_workers: 2
+  gpu_verification_workers: 1
+ablation:
+  enabled: false
+  run_id: null
+  variant: full
+  structured_state: true
+  observed_state_control: true
+  local_checks: true
+  stage_constraints: true
+  fixed_stage_ordering: true
+  feedback_optimization: true
+  parameter_search: true
+  shadow_evaluation: true
+search:
+  max_frontier_states_per_stage: 3
+  tiling_resource_pool_size: 32
+  tiling_llm_top_n: 3
+  compile_shortlist_size: 3
+  compile_fallback_limit: 6
+  tiling_top_k_per_level: 3
+  core_construction_frontier_states: 3
+  first_performance_prune_stage: Tiling
+  preserve_tiling_lineages: true
+  top_k_per_tiling_lineage: 1
+  lazy_fallback_execution: false
+  stage_survivor_selection:
+    method: pareto_mmr
+    top_k: 3
+    mmr_lambda: 0.6
+    performance_floor_ratio: 0.8
+feedback_search:
+  max_rounds: 3
+  experiments_per_round: 3
+  max_rollback_depth: 2
+  max_total_compilations: 12
+  no_improvement_patience: 2
+build:
+  platform: windows
+  verify_initial_skeleton: true
+  compile_each_strategy_step: false
+  compile_each_stage: true
+  stage_benchmark_runs: 5
+  stage_benchmark_warmup_runs: 1
+  step_compile_timeout_seconds: 180
+  benchmark_warmup_runs: 2
+  benchmark_runs: 5
+performance_unlock:
+  enabled: true
+  enable_cpu: true
+  profile: throughput_exploration
+cpu_baseline:
+  library: openblas
+  openblas_root: null
+  benchmark_runs: 10
+  benchmark_warmup_runs: 2
+  trim_each_side: 1
+shape_specialization:
+  enabled: false
+  seed_source: current_top1
+  seed_dir: null
+  shapes:
+  - 512
+  - 1024
+  - 2048
+  max_candidates_per_shape: 32
+  max_plan_combinations: 256
+  timeout_seconds: 180
+  padding_modes:
+  - original
+  - none
+  - a_only
+  - ab
+final_top1_tuning:
+  enabled: true
+  gpu_shapes:
+  - 512
+  - 1024
+  - 2048
+  - 4096
+  cpu_shapes:
+  - 256
+  - 512
+  - 768
+  - 1024
+  max_candidates_per_shape: 1710
+  rounds: 3
+  timeout_seconds: 180
+  aggregation: trimmed_mean
+  screening_benchmark_runs: 1
+  screening_warmup_runs: 0
+  final_remeasure_top_k: 3
+  target_ratio: 1.0
+  padding_modes:
+  - original
+  - none
+  - a_only
+  - ab

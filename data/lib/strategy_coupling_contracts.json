@@ -1,0 +1,79 @@
+{
+  "Tiling.": {
+    "obligations": [
+      "Compare complete Block/Warp/Thread/iteration tuples; do not prefer small Thread tiles or maximum CTA count alone.",
+      "Record threads_per_block, accumulators_per_thread and CTA count. For a TM by TN outer product, TM+TN shared elements feed TM*TN FMAs before loop-level reuse; compare reuse against register pressure.",
+      "Revalidate vector ownership, shared stride/alignment and generator-owned shape assertions when changing Tile. Never silently change a selected Tile during repair."
+    ]
+  },
+  "Layout.SharedMemory.": {
+    "obligations": [
+      "Padding is a measured alternative, not a mandatory improvement. Compare unpadded, A-only padding and A/B padding when direct indexing allows it.",
+      "A plus-one shared row stride may prevent 16-byte B stores even when global B is aligned. Coordinate physical layout and vector shared stores; never vector-cast a misaligned padded row.",
+      "Do not remove selected padding silently; explore an explicit layout alternative with updated strategy state."
+    ]
+  },
+  "Vectorization.GlobalLoad": {
+    "obligations": [
+      "Track global load width and shared store width separately. A float4 global load followed by scalar scatter does not prove vector shared storage.",
+      "If the sole launch geometry matches template threads_per_block, compare compile-time cooperative-load strides; do not assume this alone improves performance. If vector_count is divisible by threads_per_block, a fixed offset loop with v=linear_tid+offset can expose constant trip counts and unrolling. Otherwise preserve guarded strided coverage. Never apply the fixed-count form to incomplete vector groups.",
+      "For directly indexed unpadded Bs[stage][k][n], float4 shared stores require aligned base, row and stage strides divisible by four floats, n divisible by four, and a complete four-element group.",
+      "For transposed As[stage][k][m], row-major A vector components advance k and usually require scatter; do not replace them with an adjacent-m vector store."
+    ],
+    "conditional_example": "FLOAT4(Bs[stage][bk][bn]) = bv; // Only after proving row/stage/column alignment, complete vector ownership and bounds."
+  },
+  "Pipeline.": {
+    "obligations": [
+      "Record double-buffer storage and load/compute overlap separately. Two buffers do not establish asynchronous prefetch.",
+      "Keep a synchronous correct baseline when evaluating overlap. Change producer schedule, wait/commit and buffer reuse as one coupled implementation, never remove barriers solely for speed.",
+      "Track tile identity and ownership across prologue, steady state and drain: produce once, wait before consumption, finish readers before reuse, and accumulate each K element exactly once.",
+      "Inspect issue timing of next-tile global loads relative to independent FMAs and waits. Merely moving all loads before compute or alternating two arrays does not prove latency hiding. Source ordering is not compiler scheduling; inspect generated instructions and measure.",
+      "Register prefetch or deeper staging trades latency hiding against register/shared-memory pressure. Preserve selected buffering and copy mode during repair; compare alternatives only as explicit optimization candidates."
+    ]
+  },
+  "Reordering.LoadCompute.": {
+    "obligations": [
+      "Separate cooperative load and compute ownership without serializing an already selected pipeline. Respect current prologue, next-tile prefetch, wait and drain responsibilities.",
+      "A separated load phase is not evidence of overlap. Preserve independent compute between supported load issue and use; do not remove barriers or invent asynchronous behavior.",
+      "Changing loop placement must preserve complete cooperative tile coverage, buffer lifetime and exactly-once reduction. Do not replace unrelated vector loads or register fragments with a scalar baseline."
+    ]
+  },
+  "Reordering.CooperativeVectorLoad": {
+    "obligations": [
+      "Validate linear thread ownership and vector group coverage for both initial and subsequent loads, including tails. Global vector width and shared store width are independent.",
+      "Transposed A commonly needs scalar scatter of vector components. Vector B shared stores need aligned base, row, stage and column offsets; padding may invalidate them.",
+      "Keep selected pipeline lifetimes and wait points while changing load mapping; a float4 token does not demonstrate an executed vector load."
+    ]
+  },
+  "Epilogue.StoreC.": {
+    "obligations": [
+      "A float4 store is not automatically faster than scalar stores. Check actual accumulator-to-output ownership, register packing and added branches before proposing it.",
+      "Prove adjacent output components, row alignment and full-vector bounds. Elide guards only under the selected proven fast-path policy; otherwise retain valid tails. Preserve alpha/beta semantics and do not read uninitialized C when beta is zero.",
+      "Output mapping, accumulator layout and vector store may require a coupled patch. Do not change compute tiling or unrelated loads merely to simplify the epilogue."
+    ]
+  },
+  "Vectorization.StoreC.": {
+    "obligations": [
+      "Compare real store instructions, accumulator packing and guard overhead, not scalar/float4 labels. Wider stores are not a guaranteed speedup.",
+      "Prove consecutive output ownership, alignment, row and tail bounds; preserve alpha/beta and avoid reading C when beta is zero. Keep required guards, but do not reintroduce redundant ones on a selected proven specialized fast path."
+    ]
+  },
+  "Compiler.LaunchBounds": {
+    "obligations": [
+      "Launch bounds are a compiler resource hint, not proof of occupancy or speed. Match the actual launch thread count and use measured register/spill data; a larger minimum-block target may cause spills or change scheduling.",
+      "Apply only the selected hint. Do not change tile sizes or delete register prefetch to satisfy a guessed register target; missing profile data is unknown."
+    ]
+  },
+  "Reordering.KLoop.": {
+    "obligations": [
+      "Unrolling trades loop control for register lifetimes, code size and compiler scheduling. Full unrolling is not always fastest; retain the selected factor and complete K reduction in main and drain paths.",
+      "Do not infer executed instruction count from total source or SASS size. Compare the hot path and measured performance under the same workload."
+    ]
+  },
+  "Safety.": {
+    "obligations": [
+      "A shape-specialized no-guard path requires explicit proof for the current launch, tile coverage, global bounds and vector alignment, not only M/N/K divisibility.",
+      "Keep a required guarded fallback; avoid adding redundant per-element branches when the selected fast-path policy and actual indexing prove all accesses valid. Revalidate this proof after retile/layout changes."
+    ]
+  }
+}

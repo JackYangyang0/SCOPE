@@ -1,0 +1,9 @@
+﻿variant,provenance,phase1_terminal_chains,phase1_accepted_chains,phase1_acceptance_rate,phase1_best_gflops,elapsed_seconds,llm_requests,llm_tokens,final_gflops,source
+full,historical_reuse,3,3,1.0,6768.294,,,,10577.163333333334,${SCOPE_REPO}\4060ti\qwen3.5-397b-a17b\512\results\check\performance_unlock_summary.json
+minus_state_in_prompt,fresh_run,3,1,0.333333,5642.359507359333,2542.09657,162,2067666,5985.934274760666,${SCOPE_REPO}\results\experiments\runs\rq2-4060ti-512-r1\minus_state_in_prompt\rq2_ablation_record.json
+intent_only_control,interface_repaired_3_run_aggregate,8,2,0.25,6241.956060463333,2755.462243,169.33333333333334,2248298.6666666665,7755.739638245,${SCOPE_REPO}\results\experiments\rq2-4060ti-512-r1-summary\intent_only_repaired_summary.json
+minus_local_checks,fresh_run,3,3,1.0,5902.788068609667,2900.96464,172,3542035,7469.909411715001,${SCOPE_REPO}\results\experiments\runs\rq2-4060ti-512-r1\minus_local_checks\rq2_ablation_record.json
+minus_stage_ordering,fresh_run,3,2,0.666667,6045.233866833,4762.928194,184,3864580,6911.715822051667,${SCOPE_REPO}\results\experiments\runs\rq2-4060ti-512-r1\minus_stage_ordering\rq2_ablation_record.json
+minus_feedback_optimization,derived_from_shared_full_phase1_checkpoint,3,3,1.0,6768.294,,,,6478.41,${SCOPE_REPO}\results\experiments\runs\rq2-4060ti-512-r1\minus_feedback_optimization\phase3_from_full_p1\summary.json
+minus_parameter_search,paired_seed_from_full_parameter_search_r4,3,3,1.0,6768.294,7.167688,0,0,8897.0725,${SCOPE_REPO}\results\experiments\runs\rq2-4060ti-512-r4\parameter_search\512x512x512\search.json
+full_parameter_search_r4,exhaustive_from_shared_full_phase2_checkpoint,3,3,1.0,6768.294,11974.960099,0,0,9853.70625,${SCOPE_REPO}\results\experiments\runs\rq2-4060ti-512-r4\parameter_search\512x512x512\search.json

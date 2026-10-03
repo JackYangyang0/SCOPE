@@ -1,0 +1,2377 @@
+{
+  "artifact": "SCOPE source and compact experiment release",
+  "python_package": "SCOPE",
+  "file_count": 474,
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 218,
+      "sha256": "75619fe6bbbd2c4fdaea4e8a76486cde173503910f800e33fd73d782c113cd05"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 425,
+      "sha256": "6f3d712f58d11eb239df9a6743767a92d6a19b5931fc6143d47e8a262a635663"
+    },
+    {
+      "path": "14700KF/autocomp/gemm_1024.c",
+      "bytes": 19646,
+      "sha256": "dd32ed55b16e01522aa4070efe98f3688948aefbb9d5b6cdf97828d09c322b2f"
+    },
+    {
+      "path": "14700KF/autocomp/gemm_256.c",
+      "bytes": 5078,
+      "sha256": "58304025163ac993e33284e911ef1774b555bb3a5322f00736a47bc613933dc1"
+    },
+    {
+      "path": "14700KF/autocomp/gemm_512.c",
+      "bytes": 8987,
+      "sha256": "b5f70d43c3a3d91dcce811eafd5fedda3ec31ba5ec998552bf7f6d56929f3c2f"
+    },
+    {
+      "path": "14700KF/autocomp/gemm_768.c",
+      "bytes": 10630,
+      "sha256": "a0c5f672dd02243a362888ac63f35944b9a8fe16f64854e30892b1c1903ae07b"
+    },
+    {
+      "path": "14700KF/autocomp/kernel.h",
+      "bytes": 186,
+      "sha256": "28733c533f9e5f51060e7480272ed686e6dd8dc48f49361f370b22ee7adb875a"
+    },
+    {
+      "path": "14700KF/autocomp/kernel_dispatch.c",
+      "bytes": 1070,
+      "sha256": "274cd0879a19810e813f55342499f74ceb8deb91101cca4eb7ec239b0ee3a88f"
+    },
+    {
+      "path": "14700KF/autocomp/kernel_variants.h",
+      "bytes": 396,
+      "sha256": "c4d819239f9effb691691544bbaac060bb3f39a48572fd2f4dbd0f2797e4b3bc"
+    },
+    {
+      "path": "14700KF/autocomp/main.c",
+      "bytes": 6185,
+      "sha256": "a17dbcb28fa884c0a140758c0cce36911f304f6e2e402ac8ad4aa6eab0634639"
+    },
+    {
+      "path": "14700KF/autocomp/Makefile",
+      "bytes": 1737,
+      "sha256": "21a0f2ef34b3fce3d9ab0adcf04b2f67b02d38ebce62be32c3a30ec912ac5deb"
+    },
+    {
+      "path": "14700KF/autocomp/README.md",
+      "bytes": 381,
+      "sha256": "6452759687d8b4819d79fefbbcf15011e386c2c13190219e694a726aeee99ecf"
+    },
+    {
+      "path": "14700KF/autocomp-repaired/gemm_1024.c",
+      "bytes": 183,
+      "sha256": "b8acc43cbf1bab25f1faaa356eebc271eea80d194dada0448babe5211178a7f0"
+    },
+    {
+      "path": "14700KF/autocomp-repaired/gemm_256.c",
+      "bytes": 4957,
+      "sha256": "d52f1fbb251d231c955113f6694f5a478f9345ab7f8b1df348c24e86b308efde"
+    },
+    {
+      "path": "14700KF/autocomp-repaired/gemm_512.c",
+      "bytes": 182,
+      "sha256": "301ddbd077d79e214eb80825b122d0a3562b4a67740c7a0e20b64b1ba3c66a87"
+    },
+    {
+      "path": "14700KF/autocomp-repaired/gemm_768.c",
+      "bytes": 183,
+      "sha256": "3b2204ae4bbcc57055e5a1cf8245c16264070bca0e10c002326fc6e9a4c31d52"
+    },
+    {
+      "path": "14700KF/autocomp-repaired/kernel.h",
+      "bytes": 186,
+      "sha256": "28733c533f9e5f51060e7480272ed686e6dd8dc48f49361f370b22ee7adb875a"
+    },
+    {
+      "path": "14700KF/autocomp-repaired/kernel_dispatch.c",
+      "bytes": 1070,
+      "sha256": "274cd0879a19810e813f55342499f74ceb8deb91101cca4eb7ec239b0ee3a88f"
+    },
+    {
+      "path": "14700KF/autocomp-repaired/kernel_variants.h",
+      "bytes": 396,
+      "sha256": "c4d819239f9effb691691544bbaac060bb3f39a48572fd2f4dbd0f2797e4b3bc"
+    },
+    {
+      "path": "14700KF/autocomp-repaired/main.c",
+      "bytes": 6185,
+      "sha256": "a17dbcb28fa884c0a140758c0cce36911f304f6e2e402ac8ad4aa6eab0634639"
+    },
+    {
+      "path": "14700KF/autocomp-repaired/Makefile",
+      "bytes": 1761,
+      "sha256": "5e38f052316724d8caace0fd0c8fd7d0a23059235908d04e4a58f164d8d31ad8"
+    },
+    {
+      "path": "14700KF/autocomp-repaired/README.md",
+      "bytes": 390,
+      "sha256": "db55b652b934e98f355c86788218d135b5a4184663bca53a8500e8764b86566d"
+    },
+    {
+      "path": "14700KF/autocomp-repaired/repaired_blocked_gemm.h",
+      "bytes": 4111,
+      "sha256": "f48b3d8faf7f698447cc6fdc096960cefdf40dc11e05b07e6964de73c7ce8766"
+    },
+    {
+      "path": "14700KF/LLM/cpu_kernel.c",
+      "bytes": 4731,
+      "sha256": "0c0769aedd42795525176df4bb6a3a129917ccbf4d89fb8b9bcfede140578daf"
+    },
+    {
+      "path": "14700KF/LLM/cpu_kernel_1024.c",
+      "bytes": 4731,
+      "sha256": "0c0769aedd42795525176df4bb6a3a129917ccbf4d89fb8b9bcfede140578daf"
+    },
+    {
+      "path": "14700KF/LLM/cpu_kernel_256.c",
+      "bytes": 4731,
+      "sha256": "0c0769aedd42795525176df4bb6a3a129917ccbf4d89fb8b9bcfede140578daf"
+    },
+    {
+      "path": "14700KF/LLM/cpu_kernel_512.c",
+      "bytes": 4731,
+      "sha256": "0c0769aedd42795525176df4bb6a3a129917ccbf4d89fb8b9bcfede140578daf"
+    },
+    {
+      "path": "14700KF/LLM/cpu_kernel_768.c",
+      "bytes": 4731,
+      "sha256": "0c0769aedd42795525176df4bb6a3a129917ccbf4d89fb8b9bcfede140578daf"
+    },
+    {
+      "path": "14700KF/LLM/kernel.h",
+      "bytes": 172,
+      "sha256": "76e0e673cd78332f376efced7bceb6a4f874f490abec024cfcd773cac836f383"
+    },
+    {
+      "path": "14700KF/LLM/kernel_dispatch.c",
+      "bytes": 681,
+      "sha256": "ea46f69a9b7cc8822a31ea62443a19e9f9e320b991cd7e2718504fadafd3213d"
+    },
+    {
+      "path": "14700KF/LLM/kernel_variants.h",
+      "bytes": 560,
+      "sha256": "78388b663cf8049dec7623c67f8061fc1e2a8ee98a26351dfa8282008bede0e1"
+    },
+    {
+      "path": "14700KF/LLM/main.c",
+      "bytes": 6185,
+      "sha256": "a17dbcb28fa884c0a140758c0cce36911f304f6e2e402ac8ad4aa6eab0634639"
+    },
+    {
+      "path": "14700KF/reflexion/gemm_1024.c",
+      "bytes": 5173,
+      "sha256": "06d98ea90ce3800cf9f9fc2fe2a611e73a209bb4a4b3c89713077e65848d64b3"
+    },
+    {
+      "path": "14700KF/reflexion/gemm_256.c",
+      "bytes": 2281,
+      "sha256": "94e256e40791529f9a4c3c2441c9cacb5ca4e8e36f216f27369229bdef9b1322"
+    },
+    {
+      "path": "14700KF/reflexion/gemm_512.c",
+      "bytes": 16982,
+      "sha256": "ec0218b9648fd489b4c1b84197b0674f170b01e12e612d23e071c35a9e79f2ba"
+    },
+    {
+      "path": "14700KF/reflexion/gemm_768.c",
+      "bytes": 5246,
+      "sha256": "97d684252f21258a0e3158771d2ebcc8d9c4e1117aa2ab78f80179f73e798375"
+    },
+    {
+      "path": "14700KF/reflexion/kernel.h",
+      "bytes": 188,
+      "sha256": "842d105581e3e9a8c3dd19a1c4b01594890c49baa9793e4f082edfad4d00423f"
+    },
+    {
+      "path": "14700KF/reflexion/kernel_dispatch.c",
+      "bytes": 1070,
+      "sha256": "274cd0879a19810e813f55342499f74ceb8deb91101cca4eb7ec239b0ee3a88f"
+    },
+    {
+      "path": "14700KF/reflexion/kernel_variants.h",
+      "bytes": 398,
+      "sha256": "fb7f7597402538b3d7f296d87dcd7001e7aee70c13e9dec518988884de99622e"
+    },
+    {
+      "path": "14700KF/reflexion/main.c",
+      "bytes": 6185,
+      "sha256": "a17dbcb28fa884c0a140758c0cce36911f304f6e2e402ac8ad4aa6eab0634639"
+    },
+    {
+      "path": "14700KF/reflexion/Makefile",
+      "bytes": 1738,
+      "sha256": "e2fdb34a88316d2fcad7e59ac92293a4021c9f43a406d3cdf5d18206f5529dc1"
+    },
+    {
+      "path": "14700KF/reflexion/README.md",
+      "bytes": 401,
+      "sha256": "0d8c7f8cba325d7cbabfddaf013654f671402a0e0435f0bf449e133415cb678f"
+    },
+    {
+      "path": "14700KF/reflexion-repaired/gemm_1024.c",
+      "bytes": 185,
+      "sha256": "06405170be75c0d299902934f8d24654e3222a306b6d1d76798a270d30da87ea"
+    },
+    {
+      "path": "14700KF/reflexion-repaired/gemm_256.c",
+      "bytes": 185,
+      "sha256": "b28282020684b5052651f697bf7beabb3150e4d427aeffbc59c74b138fdde7a8"
+    },
+    {
+      "path": "14700KF/reflexion-repaired/gemm_512.c",
+      "bytes": 184,
+      "sha256": "9d5bc870885ff06e7c8092cb66f3cf8a9bb23f190d2f8ac0c32a81c2a221db27"
+    },
+    {
+      "path": "14700KF/reflexion-repaired/gemm_768.c",
+      "bytes": 184,
+      "sha256": "74e72adc1e96fe019802ad2e11748569ea801a1329c5573b815dc387250b004a"
+    },
+    {
+      "path": "14700KF/reflexion-repaired/kernel.h",
+      "bytes": 188,
+      "sha256": "842d105581e3e9a8c3dd19a1c4b01594890c49baa9793e4f082edfad4d00423f"
+    },
+    {
+      "path": "14700KF/reflexion-repaired/kernel_dispatch.c",
+      "bytes": 1070,
+      "sha256": "274cd0879a19810e813f55342499f74ceb8deb91101cca4eb7ec239b0ee3a88f"
+    },
+    {
+      "path": "14700KF/reflexion-repaired/kernel_variants.h",
+      "bytes": 398,
+      "sha256": "fb7f7597402538b3d7f296d87dcd7001e7aee70c13e9dec518988884de99622e"
+    },
+    {
+      "path": "14700KF/reflexion-repaired/main.c",
+      "bytes": 6185,
+      "sha256": "a17dbcb28fa884c0a140758c0cce36911f304f6e2e402ac8ad4aa6eab0634639"
+    },
+    {
+      "path": "14700KF/reflexion-repaired/Makefile",
+      "bytes": 1762,
+      "sha256": "c2faa5da1cb95e0e55f29ba29bc179a866de25546a3b60a037790a7665a5940b"
+    },
+    {
+      "path": "14700KF/reflexion-repaired/README.md",
+      "bytes": 393,
+      "sha256": "b5ddc8a80bf60989c94556c57ef9c1b67e2b4e83223d8e45f533b1bdb65fd498"
+    },
+    {
+      "path": "14700KF/reflexion-repaired/repaired_blocked_gemm.h",
+      "bytes": 4111,
+      "sha256": "f48b3d8faf7f698447cc6fdc096960cefdf40dc11e05b07e6964de73c7ce8766"
+    },
+    {
+      "path": "14700KF/SCOPE/cpu_kernel_1024.c",
+      "bytes": 21073,
+      "sha256": "3e0449ce748e5d59d667cab4f7d9694c471a32de7276674132e82d175fe600cf"
+    },
+    {
+      "path": "14700KF/SCOPE/cpu_kernel_256.c",
+      "bytes": 5518,
+      "sha256": "1886ef56bc798bba067d4096be5a73e124d0b7a69da6407f466cb057fb37b537"
+    },
+    {
+      "path": "14700KF/SCOPE/cpu_kernel_512.c",
+      "bytes": 5518,
+      "sha256": "ed8e7b2b2ae8d4ff6471c03d41253af3e9326d20490bb2780827f4a190b2b635"
+    },
+    {
+      "path": "14700KF/SCOPE/cpu_kernel_768.c",
+      "bytes": 5518,
+      "sha256": "f913bffec36fc3794cfe58cf291f49a906c497993985d6fb9ae231ba79c0a12e"
+    },
+    {
+      "path": "14700KF/SCOPE/kernel.h",
+      "bytes": 172,
+      "sha256": "76e0e673cd78332f376efced7bceb6a4f874f490abec024cfcd773cac836f383"
+    },
+    {
+      "path": "14700KF/SCOPE/kernel_dispatch.c",
+      "bytes": 681,
+      "sha256": "ea46f69a9b7cc8822a31ea62443a19e9f9e320b991cd7e2718504fadafd3213d"
+    },
+    {
+      "path": "14700KF/SCOPE/kernel_variants.h",
+      "bytes": 546,
+      "sha256": "1ea48b554782ae6277b9a63d51225a90fddb388888b6ddb72e1760652feeea17"
+    },
+    {
+      "path": "14700KF/SCOPE/main.c",
+      "bytes": 6185,
+      "sha256": "a17dbcb28fa884c0a140758c0cce36911f304f6e2e402ac8ad4aa6eab0634639"
+    },
+    {
+      "path": "14700KF/SCOPE/Makefile",
+      "bytes": 2814,
+      "sha256": "a4b519df0525f710f3b6fd54e0db8d4d6d0684c21ab620668c66939af35dee49"
+    },
+    {
+      "path": "4060ti/autocomp/build_windows.bat",
+      "bytes": 1845,
+      "sha256": "3de6403e549695007799822d95bbb498d35d004023aab31263ace5561b819f50"
+    },
+    {
+      "path": "4060ti/autocomp/cuda_kernel_1024.cuh",
+      "bytes": 3879,
+      "sha256": "8db90a967c3a642a713158e81edcdd6b1d650fb9feba34d5c038411873efcb91"
+    },
+    {
+      "path": "4060ti/autocomp/cuda_kernel_2048.cuh",
+      "bytes": 4990,
+      "sha256": "7b5aef3185c12a3240a24e6c1e02fe88f5d24a43806e51ca5ecb6a1c2c210a30"
+    },
+    {
+      "path": "4060ti/autocomp/cuda_kernel_4096.cuh",
+      "bytes": 5835,
+      "sha256": "fa768860d187d6bb5ffff6cd9571ef04574a6320a6176428f04d07e7fea178a8"
+    },
+    {
+      "path": "4060ti/autocomp/cuda_kernel_512.cuh",
+      "bytes": 2061,
+      "sha256": "db09e76701f5d5e8dcf932a6025ec23d31a5fe5f4d71b1fc9e573eac69c153e2"
+    },
+    {
+      "path": "4060ti/autocomp/kernel.h",
+      "bytes": 166,
+      "sha256": "6de96408771b35154a41fd36fafb53d5349e583d28ee183289420e6f4c05fa65"
+    },
+    {
+      "path": "4060ti/autocomp/kernel_dispatch.cu",
+      "bytes": 1527,
+      "sha256": "637e8cfa6a75d6053fb5fc67e9174c19ec01c6ffaa90064ca66b9cad89d4f188"
+    },
+    {
+      "path": "4060ti/autocomp/kernel_variants.h",
+      "bytes": 401,
+      "sha256": "6ef7f5674b813061ab4a4008ed3d254566e1bcd57387d3f255384f723052aadd"
+    },
+    {
+      "path": "4060ti/autocomp/main.cpp",
+      "bytes": 6962,
+      "sha256": "2a2257aa4b696ffb00f2673f6a090019808f9cd983c1b9c7039e5f64dc0ac952"
+    },
+    {
+      "path": "4060ti/autocomp/Makefile",
+      "bytes": 2397,
+      "sha256": "cded805afa9c825b5788dc2eef85ed48706d667ecb875ade2444352afb7af3a1"
+    },
+    {
+      "path": "4060ti/deepseek-v4.1-flash/build_windows.bat",
+      "bytes": 1671,
+      "sha256": "b1b2985f332ab5de695379a932f2294fd3debbe7f9469420e43c57c93edad61b"
+    },
+    {
+      "path": "4060ti/deepseek-v4.1-flash/cuda_kernel_1024.cuh",
+      "bytes": 9527,
+      "sha256": "d8a831b1e9be25e9552ea75738e5e5e516bdc06263e67ec3656c26f510aeb7fa"
+    },
+    {
+      "path": "4060ti/deepseek-v4.1-flash/cuda_kernel_2048.cuh",
+      "bytes": 9457,
+      "sha256": "d3792cfb58465bf2fec3cad1eb380aac3835a5716ef7778214c1ffeff85e45cc"
+    },
+    {
+      "path": "4060ti/deepseek-v4.1-flash/cuda_kernel_4096.cuh",
+      "bytes": 9351,
+      "sha256": "c2fc6b4969bbcfe36f84beb74dc20d99609efb69bebc592ac85c6d7f5ce30090"
+    },
+    {
+      "path": "4060ti/deepseek-v4.1-flash/cuda_kernel_512.cuh",
+      "bytes": 9647,
+      "sha256": "7e0825615404abf1ba4f3e84ba27184946b7e1c89be52bb06944da2d13404602"
+    },
+    {
+      "path": "4060ti/deepseek-v4.1-flash/kernel.h",
+      "bytes": 166,
+      "sha256": "6de96408771b35154a41fd36fafb53d5349e583d28ee183289420e6f4c05fa65"
+    },
+    {
+      "path": "4060ti/deepseek-v4.1-flash/kernel_dispatch.cu",
+      "bytes": 1071,
+      "sha256": "c7c49062aa333336560f6c17a5945c9412d75099ab74cda1154917bfcc7fdc40"
+    },
+    {
+      "path": "4060ti/deepseek-v4.1-flash/kernel_variants.h",
+      "bytes": 421,
+      "sha256": "d6be3c8e1dc5ec4ab29c35a255cdab55fac4b030545d851d8281bdc2a2c52494"
+    },
+    {
+      "path": "4060ti/deepseek-v4.1-flash/main.cpp",
+      "bytes": 6962,
+      "sha256": "2a2257aa4b696ffb00f2673f6a090019808f9cd983c1b9c7039e5f64dc0ac952"
+    },
+    {
+      "path": "4060ti/deepseek-v4.1-flash/Makefile",
+      "bytes": 1538,
+      "sha256": "63a3600c0016888d10b5e5b385555cb58888ddbb86b3e0d540a6f304c6e94bb8"
+    },
+    {
+      "path": "4060ti/GLM-5.2/build_windows.bat",
+      "bytes": 1671,
+      "sha256": "b1b2985f332ab5de695379a932f2294fd3debbe7f9469420e43c57c93edad61b"
+    },
+    {
+      "path": "4060ti/GLM-5.2/cuda_kernel_1024.cuh",
+      "bytes": 9287,
+      "sha256": "03e678ba2658f53c4697d84f88f03d0cb15dcccef432338090af791f92fddf07"
+    },
+    {
+      "path": "4060ti/GLM-5.2/cuda_kernel_2048.cuh",
+      "bytes": 9287,
+      "sha256": "03e678ba2658f53c4697d84f88f03d0cb15dcccef432338090af791f92fddf07"
+    },
+    {
+      "path": "4060ti/GLM-5.2/cuda_kernel_4096.cuh",
+      "bytes": 9286,
+      "sha256": "d6cf29ee7f436466d221e3f8ab8ac963ddbd975a785ee182f8cb020977651ef3"
+    },
+    {
+      "path": "4060ti/GLM-5.2/cuda_kernel_512.cuh",
+      "bytes": 9287,
+      "sha256": "03e678ba2658f53c4697d84f88f03d0cb15dcccef432338090af791f92fddf07"
+    },
+    {
+      "path": "4060ti/GLM-5.2/kernel.h",
+      "bytes": 166,
+      "sha256": "6de96408771b35154a41fd36fafb53d5349e583d28ee183289420e6f4c05fa65"
+    },
+    {
+      "path": "4060ti/GLM-5.2/kernel_dispatch.cu",
+      "bytes": 1071,
+      "sha256": "c7c49062aa333336560f6c17a5945c9412d75099ab74cda1154917bfcc7fdc40"
+    },
+    {
+      "path": "4060ti/GLM-5.2/kernel_variants.h",
+      "bytes": 421,
+      "sha256": "d6be3c8e1dc5ec4ab29c35a255cdab55fac4b030545d851d8281bdc2a2c52494"
+    },
+    {
+      "path": "4060ti/GLM-5.2/main.cpp",
+      "bytes": 6962,
+      "sha256": "2a2257aa4b696ffb00f2673f6a090019808f9cd983c1b9c7039e5f64dc0ac952"
+    },
+    {
+      "path": "4060ti/GLM-5.2/Makefile",
+      "bytes": 1538,
+      "sha256": "63a3600c0016888d10b5e5b385555cb58888ddbb86b3e0d540a6f304c6e94bb8"
+    },
+    {
+      "path": "4060ti/LLM/build_windows.bat",
+      "bytes": 1836,
+      "sha256": "4c40806e846aac2fd8e8dc64eea6ddfbad76451021c9cb4e486d08e840f61573"
+    },
+    {
+      "path": "4060ti/LLM/cuda_kernel.cuh",
+      "bytes": 8720,
+      "sha256": "28027a08434c71b858a5589acba7255b186c75a3aa6029a39fd26fd570d5ff11"
+    },
+    {
+      "path": "4060ti/LLM/cuda_kernel_1024.cuh",
+      "bytes": 293,
+      "sha256": "1f8f6dd16749a4972e9d2f044617a01cbe90745f7a16e5002f2e51b5c400b176"
+    },
+    {
+      "path": "4060ti/LLM/cuda_kernel_2048.cuh",
+      "bytes": 293,
+      "sha256": "adf6ca8d985b8353a195d0e1383cb3939e550309f4b54dfa86c9a37f6dd64cd0"
+    },
+    {
+      "path": "4060ti/LLM/cuda_kernel_4096.cuh",
+      "bytes": 293,
+      "sha256": "2af4ba43707bcc16ccb96f037aee12f5292e435733a99396783399f59dfe9ebd"
+    },
+    {
+      "path": "4060ti/LLM/cuda_kernel_512.cuh",
+      "bytes": 293,
+      "sha256": "7b3970a0afe122b11b3f205a2b92a356353d326685bd05998351b597ad50b812"
+    },
+    {
+      "path": "4060ti/LLM/kernel.h",
+      "bytes": 119,
+      "sha256": "ff8459a68e7d26ce79880cd03c575b80b1a0e59d03a60af77a82520acadf25c5"
+    },
+    {
+      "path": "4060ti/LLM/kernel_dispatch.cu",
+      "bytes": 1116,
+      "sha256": "f306ee976de93d3a4f6e8f370df54dc9e55f48f8828d7766347521a142b1d888"
+    },
+    {
+      "path": "4060ti/LLM/kernel_variants.h",
+      "bytes": 421,
+      "sha256": "d6be3c8e1dc5ec4ab29c35a255cdab55fac4b030545d851d8281bdc2a2c52494"
+    },
+    {
+      "path": "4060ti/LLM/main.cpp",
+      "bytes": 8377,
+      "sha256": "cede41df7691984bfc31191190ba3a0d109aaaef0b0d452dfa7617f4ce4470c5"
+    },
+    {
+      "path": "4060ti/LLM/Makefile",
+      "bytes": 2955,
+      "sha256": "cb03990a61a5b5d4d26e4411ff46baa7fdcd2d6ab954be8718c94e124e224ea4"
+    },
+    {
+      "path": "4060ti/QiMeng/cuda_kernel.cuh",
+      "bytes": 5943,
+      "sha256": "6d8092a35696dbb7dfbf55074983ddbe87ec834b447f462c3ec8711332291206"
+    },
+    {
+      "path": "4060ti/QiMeng/kernel.cu",
+      "bytes": 938,
+      "sha256": "1eae78194e495b823f923ac968f2cccb6576cbd5f1717af1147658b577ae0e02"
+    },
+    {
+      "path": "4060ti/QiMeng/kernel.h",
+      "bytes": 122,
+      "sha256": "8f912b6a1313d7f37de8ea4d950c5a4ebce7c6b024ddcc62e13ff1fba8a42570"
+    },
+    {
+      "path": "4060ti/QiMeng/kernel_128_128.cu",
+      "bytes": 815,
+      "sha256": "ddef2ebb14aaac829dd91cecc222e639ebfe4218cd2cd411f1d0feda188b0833"
+    },
+    {
+      "path": "4060ti/QiMeng/kernel_32_64.cu",
+      "bytes": 811,
+      "sha256": "a5f1ecdc653598bd7b9aa37d3e4efff169c72fdfa95c4cd8a8b5ebd66cd86d14"
+    },
+    {
+      "path": "4060ti/QiMeng/kernel_64_128.cu",
+      "bytes": 809,
+      "sha256": "a66b16f9483e3fce904015c83b4ac54f1e115ac9b45e35bd5a56ee7b902ee2f3"
+    },
+    {
+      "path": "4060ti/QiMeng/kernel_64_64.cu",
+      "bytes": 812,
+      "sha256": "dd89749b2e92e997c92129dcd8a3a41ce7211b8a88cfba80dbffceb710c2876d"
+    },
+    {
+      "path": "4060ti/QiMeng/main.cpp",
+      "bytes": 4837,
+      "sha256": "55dcfa6c4e8b63cb94882ed2a269eac33e8ec1744f4c44d43ca705febdac728c"
+    },
+    {
+      "path": "4060ti/QiMeng/Makefile",
+      "bytes": 283,
+      "sha256": "a48f35b99eede4576cd10af7468213fbfd56064affdcaacd01ad4ac2f2b8d655"
+    },
+    {
+      "path": "4060ti/qwen3.5-397b-a17b/build_windows.bat",
+      "bytes": 1874,
+      "sha256": "e8b2dd389e87cf24550238bb9023eaf6739ddb1be25c8b48619054ee9fb2f28e"
+    },
+    {
+      "path": "4060ti/qwen3.5-397b-a17b/cuda_kernel_1024.cuh",
+      "bytes": 10944,
+      "sha256": "69bc17cfac10ba44fd40d9c51e4b975f5ab8ffcde88c6a7402172e5ccdb289bf"
+    },
+    {
+      "path": "4060ti/qwen3.5-397b-a17b/cuda_kernel_2048.cuh",
+      "bytes": 10944,
+      "sha256": "69bc17cfac10ba44fd40d9c51e4b975f5ab8ffcde88c6a7402172e5ccdb289bf"
+    },
+    {
+      "path": "4060ti/qwen3.5-397b-a17b/cuda_kernel_4096.cuh",
+      "bytes": 10944,
+      "sha256": "69bc17cfac10ba44fd40d9c51e4b975f5ab8ffcde88c6a7402172e5ccdb289bf"
+    },
+    {
+      "path": "4060ti/qwen3.5-397b-a17b/cuda_kernel_512.cuh",
+      "bytes": 10944,
+      "sha256": "ebe26aaf9dc44bf6cd1a8b5a57d4cbceb6ab6006f3464cfb2ffaf9b34281504d"
+    },
+    {
+      "path": "4060ti/qwen3.5-397b-a17b/kernel.h",
+      "bytes": 166,
+      "sha256": "6de96408771b35154a41fd36fafb53d5349e583d28ee183289420e6f4c05fa65"
+    },
+    {
+      "path": "4060ti/qwen3.5-397b-a17b/kernel_dispatch.cu",
+      "bytes": 1071,
+      "sha256": "c7c49062aa333336560f6c17a5945c9412d75099ab74cda1154917bfcc7fdc40"
+    },
+    {
+      "path": "4060ti/qwen3.5-397b-a17b/kernel_variants.h",
+      "bytes": 421,
+      "sha256": "d6be3c8e1dc5ec4ab29c35a255cdab55fac4b030545d851d8281bdc2a2c52494"
+    },
+    {
+      "path": "4060ti/qwen3.5-397b-a17b/main.cpp",
+      "bytes": 6962,
+      "sha256": "2a2257aa4b696ffb00f2673f6a090019808f9cd983c1b9c7039e5f64dc0ac952"
+    },
+    {
+      "path": "4060ti/qwen3.5-397b-a17b/Makefile",
+      "bytes": 3296,
+      "sha256": "dda6ef643572c21c814c92f9d5e719431df6a0ffc03e243cacdc422739dc24e1"
+    },
+    {
+      "path": "4060ti/reflexion/build_windows.bat",
+      "bytes": 1846,
+      "sha256": "ee12ba8e544736e8a453bc64ef26ab93b081aaff0befd19e6f83788274777085"
+    },
+    {
+      "path": "4060ti/reflexion/cuda_kernel_1024.cuh",
+      "bytes": 2780,
+      "sha256": "30d58559ab27f198e763bc8086b0c3c483835c060b1c587d439618fae402db10"
+    },
+    {
+      "path": "4060ti/reflexion/cuda_kernel_2048.cuh",
+      "bytes": 3574,
+      "sha256": "b70c6f877fd6f4e9a0eeb4ba180a573d3e8526941782b4cea2a5e13ebc3863c5"
+    },
+    {
+      "path": "4060ti/reflexion/cuda_kernel_4096.cuh",
+      "bytes": 4803,
+      "sha256": "6d314c47585f5f7b24b033ba19ca25508fbd046b513921507b13419ffb439131"
+    },
+    {
+      "path": "4060ti/reflexion/cuda_kernel_512.cuh",
+      "bytes": 1769,
+      "sha256": "39f7509613e06fadc58024cc16c9e12e3c3d4babfa4653006a62badc7ce97977"
+    },
+    {
+      "path": "4060ti/reflexion/kernel.h",
+      "bytes": 166,
+      "sha256": "6de96408771b35154a41fd36fafb53d5349e583d28ee183289420e6f4c05fa65"
+    },
+    {
+      "path": "4060ti/reflexion/kernel_dispatch.cu",
+      "bytes": 1356,
+      "sha256": "2ab38ef22033aab7294d9c7605578828f9c401dafcce27584e9661217aa436af"
+    },
+    {
+      "path": "4060ti/reflexion/kernel_variants.h",
+      "bytes": 307,
+      "sha256": "bcadf4d08ee56b2f403855b70debdf6324c473a6fa4dc5cd77f3a12215b11a7f"
+    },
+    {
+      "path": "4060ti/reflexion/main.cpp",
+      "bytes": 6962,
+      "sha256": "2a2257aa4b696ffb00f2673f6a090019808f9cd983c1b9c7039e5f64dc0ac952"
+    },
+    {
+      "path": "4060ti/reflexion/Makefile",
+      "bytes": 2321,
+      "sha256": "4657ce68e609ed5585f8e57638989a037df40cac430ac959f2651c89a5cad0bd"
+    },
+    {
+      "path": "__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "app.py",
+      "bytes": 404853,
+      "sha256": "b72617829c60f8bd96eac14dabe00bcb38c1817f90ebdf84db8b5c9b4f84e11c"
+    },
+    {
+      "path": "benchmark.py",
+      "bytes": 34185,
+      "sha256": "cdb2ff488defd7794ba1bf54dc2d7a27d2d123eb6723ad308f15863a2da50427"
+    },
+    {
+      "path": "compare_kernel_controls.py",
+      "bytes": 4819,
+      "sha256": "7f7993bb501809f4eb148911396dd6c0072f1f1b4449038bfb89464923eaf712"
+    },
+    {
+      "path": "compare_load_layout.py",
+      "bytes": 9613,
+      "sha256": "ece18af5f0e74b52ac0d0889baf2c9ff6cb3ff9467307b6dc87fe2898d3131ef"
+    },
+    {
+      "path": "compare_reference_kernel.py",
+      "bytes": 7981,
+      "sha256": "5839ccb6a487b79581848a4e8c8d7bf98f514a32442531e6020d774b6026e699"
+    },
+    {
+      "path": "compare_tile_loads.py",
+      "bytes": 4830,
+      "sha256": "3863877186abd3dc30b79a8899ac4871a9f7fe1a0db1ab2bd7fbc19e4616b831"
+    },
+    {
+      "path": "conf.example.yaml",
+      "bytes": 4454,
+      "sha256": "c0c1b338b6aa2e5674a2f20d339558cd865b3b4835022b9a85bc618ca428b75f"
+    },
+    {
+      "path": "conf.yaml",
+      "bytes": 3981,
+      "sha256": "e98b14dfefdbea5b1b5c8c50742b4e19830e561cc8a0e78bcac82210940eecf3"
+    },
+    {
+      "path": "cpu_app.py",
+      "bytes": 8343,
+      "sha256": "7a3db5806a066d3297b88bad9c93152ddf07f693940cc39b5e02c66f6dcd1d59"
+    },
+    {
+      "path": "data/graph/cpu_dependency_graph.json",
+      "bytes": 10084,
+      "sha256": "ed0d6dd087b02eead0ff292e774b2f5e13dd07273b73808507bcd2b0f3e8c440"
+    },
+    {
+      "path": "data/graph/dependency_graph.json",
+      "bytes": 31073,
+      "sha256": "ce0a444f4d9a5d92d63dc4df183f6bbb866a4b26e642f306df1fe87e6c39681f"
+    },
+    {
+      "path": "data/graph/dependency_graph_metadata.json",
+      "bytes": 1570,
+      "sha256": "fd62941ad15bb2e76a06b6614961700516db9a51a86d7e74be6bbbd1a0e42ff6"
+    },
+    {
+      "path": "data/IRs/optir.json",
+      "bytes": 7634,
+      "sha256": "0cb8c887945980344a04d148e7f700a8b10786e25e16d4f78f8af2898576bd63"
+    },
+    {
+      "path": "data/IRs/win-ir.json",
+      "bytes": 9605,
+      "sha256": "666ede840373d8753df7c90c69200041d621f372451f9c4f190632dd13dfd095"
+    },
+    {
+      "path": "data/lib/build_strategy_examples.py",
+      "bytes": 41056,
+      "sha256": "e87d0eb074e8040b546f03f85e4680784802a9efd12bd2234e416b927b46dd09"
+    },
+    {
+      "path": "data/lib/cpu_strategy_index.json",
+      "bytes": 36192,
+      "sha256": "efc1d82e09da0618ae6bc208dd5561cc07e78c8d02c0e4a2a1043f7bea09d80d"
+    },
+    {
+      "path": "data/lib/cpu_strategy_library.json",
+      "bytes": 73079,
+      "sha256": "0b0ac45e23b5bf78520d607d600f7e5e5ba847e64f4453d47632e3cc666b72e7"
+    },
+    {
+      "path": "data/lib/strategy_coupling_contracts.json",
+      "bytes": 6939,
+      "sha256": "149f2fbed52d0aeec73a880025e063214b4af316ca61ccaf0348665d6d483d43"
+    },
+    {
+      "path": "data/lib/strategy_examples.json",
+      "bytes": 9770,
+      "sha256": "2d64171b62adc06406132f9a1217c472497173b5eadd7ca2cd7878c2057daf9d"
+    },
+    {
+      "path": "data/lib/strategy_examples.md",
+      "bytes": 2905,
+      "sha256": "90c223890b60e45ef43e251731e806c04e49d0aa70e466d2d16fe2c363a6a1d1"
+    },
+    {
+      "path": "data/lib/strategy_examples_full.json",
+      "bytes": 316454,
+      "sha256": "3a041ded664eead1dbc4afe513b3ff3c52afea12552d89f75e4805bc83fe04ed"
+    },
+    {
+      "path": "data/lib/strategy_index.json",
+      "bytes": 135812,
+      "sha256": "c21883388c0c6f2bed99ed9fd68a323b522f90c343dfeb1083218c9276e56336"
+    },
+    {
+      "path": "data/lib/strategy_library.json",
+      "bytes": 326821,
+      "sha256": "5341cc42b09675c2aca5c751753a8e8afcd286f3dce6d8c1129a25df937057ba"
+    },
+    {
+      "path": "data/lib/verification_schema.json",
+      "bytes": 1935,
+      "sha256": "cfa00c49241316897164efef985325a01ec994290c1a415a997974448164e644"
+    },
+    {
+      "path": "diagnose_tiling_response.py",
+      "bytes": 3945,
+      "sha256": "8b9efe44955b506978fbb67e3401c0440a4f8f319fbbe8a5432c9d1e777962d3"
+    },
+    {
+      "path": "diagnosis/__init__.py",
+      "bytes": 44,
+      "sha256": "8ddf069d2b34ca4cb4d48e767f7323194d3a5ba3fa00b15c2a691af74f3ee4dc"
+    },
+    {
+      "path": "diagnosis/defect_diagnosis.py",
+      "bytes": 31237,
+      "sha256": "67cd103629698f84d9ba1196a0e9c16f127066e1db5fb99b1cf30f4f233a4547"
+    },
+    {
+      "path": "docs/ampere_strategy_support.md",
+      "bytes": 4405,
+      "sha256": "b526857eefe167562cf264e3a82b4ce9d2d3c009b78d1371e2e903f25468faec"
+    },
+    {
+      "path": "docs/chain_execution.md",
+      "bytes": 1730,
+      "sha256": "34b1cfc83686de2e40d483b57ed824ca9715ce1773a06149babad6be8acaeb9e"
+    },
+    {
+      "path": "docs/EXPERIMENT_AUDIT.json",
+      "bytes": 2091,
+      "sha256": "d6852436f6cc4e31eccddf645994f693106568ffeb99340e53af2723892d1792"
+    },
+    {
+      "path": "docs/EXPERIMENT_AUDIT.md",
+      "bytes": 2547,
+      "sha256": "b2122055f4dabb6bb9263974e5781f316f2204bcdf6f6779df796a173887df3e"
+    },
+    {
+      "path": "docs/ir_type_and_tile_prior_fix_20260922.md",
+      "bytes": 3971,
+      "sha256": "6c2f6f56905519265efd5e760eb0f1ef1756593d35e9bf318a731e1b8c9d781e"
+    },
+    {
+      "path": "docs/RQ2_RQ3_EXPERIMENTS.md",
+      "bytes": 3241,
+      "sha256": "c7e0e5caef46471665aceadabc7f1d14818932333b30c5aa5e03e269db2a8ed0"
+    },
+    {
+      "path": "docs/SCOPE_research_report_outline.md",
+      "bytes": 14452,
+      "sha256": "702689d2cce99c49a24f5b21f2c3e47b2caae61ca78f3f713942f4278ad77ea2"
+    },
+    {
+      "path": "docs/shape_reuse.md",
+      "bytes": 8083,
+      "sha256": "2f13c741281582d04f77d23dbf9f68ade3282e9398cbb1853217c8c937c23b6f"
+    },
+    {
+      "path": "experiments/rq2_4060ti_512/EXPERIMENT_PROTOCOL_AUDIT.md",
+      "bytes": 5646,
+      "sha256": "3225bd62fe781dbe02359c5fcb8795b5ba4ed9b0046795861b62f1912813ad54"
+    },
+    {
+      "path": "experiments/rq2_4060ti_512/figures/plot_rq2_figures.py",
+      "bytes": 26891,
+      "sha256": "64b9dc2ec11f7aded170a74074189c94ed1aae3afbde42e3a79cedb2a95d0276"
+    },
+    {
+      "path": "experiments/rq2_4060ti_512/figures/rq2_compact_ablation_analysis.pdf",
+      "bytes": 33084,
+      "sha256": "6d5492093d32a5fc83d65d9bfcb896a8f4b77b8c34c9275d83da1900e4fc4858"
+    },
+    {
+      "path": "experiments/rq2_4060ti_512/figures/rq2_compact_ablation_analysis.png",
+      "bytes": 141718,
+      "sha256": "7b9bcb442dd40db0d2c80d1d4036370d8d0d2536ed63347e4f834a9d9297c645"
+    },
+    {
+      "path": "experiments/rq2_4060ti_512/intent_only_repaired_runs.csv",
+      "bytes": 1189,
+      "sha256": "374e5a303769292a4fe1aff52a517057e5b8f68320e2db3ec419662d394ac213"
+    },
+    {
+      "path": "experiments/rq2_4060ti_512/intent_only_repaired_summary.json",
+      "bytes": 4604,
+      "sha256": "fb983a6a3da05cbc08db613612f09492908dcea742f6cf703a5a6ede4f5f68ea"
+    },
+    {
+      "path": "experiments/rq2_4060ti_512/rq2_complete_report.json",
+      "bytes": 5124,
+      "sha256": "f6c3ab92bc5224f09cd8831c632dd73fdb82bc9e097f742e3432d05729212014"
+    },
+    {
+      "path": "experiments/rq2_4060ti_512/rq2_complete_runs.csv",
+      "bytes": 1813,
+      "sha256": "ca0c564ab917ee4188f120512acf74da0d83db557a7599038187ea770b3bdcf7"
+    },
+    {
+      "path": "experiments/rq2_4060ti_512/RQ2_RQ3_FINDINGS.md",
+      "bytes": 6110,
+      "sha256": "c6cdcbc2a3858b95e3f5cb235f8c39a8083c50753e13e33fdd0eafb7bfc41d32"
+    },
+    {
+      "path": "experiments/rq2_4060ti_512/rq3_optimization_runs.csv",
+      "bytes": 4551,
+      "sha256": "d61dc685350038d92039a94c9bdaea73191fc96bdf5204a5c954d4816f87b428"
+    },
+    {
+      "path": "gemm_code/baseline/baseline_common.cuh",
+      "bytes": 4367,
+      "sha256": "b2350b9afde13589455370c58bf7d72ffa9bc57f5f097cecb855cffb7b2a5824"
+    },
+    {
+      "path": "gemm_code/baseline/build_linux.sh",
+      "bytes": 336,
+      "sha256": "7daf8b9d44d3d6bd016ea5f1abe8cefbed969c03849295295ccb307eaae3b2ac"
+    },
+    {
+      "path": "gemm_code/baseline/build_openblas_linux.sh",
+      "bytes": 634,
+      "sha256": "c650575a36ee0598919d87ed069f8a7d606ccf32a2a1c472ba275ee86dfc9d6d"
+    },
+    {
+      "path": "gemm_code/baseline/build_openblas_windows.bat",
+      "bytes": 1632,
+      "sha256": "3ebb6798241726302f34aa20b9575c8a27cfa7ec6d378ab3380288728a21d27d"
+    },
+    {
+      "path": "gemm_code/baseline/build_windows.bat",
+      "bytes": 606,
+      "sha256": "a6e6526b44cfd19607c7ed461ad97b3f1cdd11b683cb5b1a3a295722b399ae9c"
+    },
+    {
+      "path": "gemm_code/baseline/cublas_sgemm_fp32.cu",
+      "bytes": 2536,
+      "sha256": "98946204acd8aff6b3268d18e7925c9452f77118dd4ad210177acfd142f45a59"
+    },
+    {
+      "path": "gemm_code/baseline/cublas_sgemm_tf32.cu",
+      "bytes": 2669,
+      "sha256": "56cbb1851ac3c71f59b9127f8514709b307f2123de68faafe3b994f8a13abfd3"
+    },
+    {
+      "path": "gemm_code/baseline/cublaslt_matmul_tf32.cu",
+      "bytes": 6170,
+      "sha256": "4d4c16366ce9c6fe1ffe72b24ecc3ece8c2f89b6c1da9849dccd994981b57b47"
+    },
+    {
+      "path": "gemm_code/baseline/openblas_sgemm_fp32.c",
+      "bytes": 2808,
+      "sha256": "ab0d17329ca0c19cf92e702f61f696d87732274b80a58eec6dddc11f90b244da"
+    },
+    {
+      "path": "gemm_code/baseline/README.md",
+      "bytes": 2198,
+      "sha256": "8d54b71b9bc270c095ec3ce82fd98cfeb1e9a94c9f3a85a585316faa69de84bf"
+    },
+    {
+      "path": "gemm_code/baseline/torch_matmul_baseline.py",
+      "bytes": 2866,
+      "sha256": "a46fa4969232bd755e4fd9764df6f20fa07056834eac6a19b08c1d0e190b3590"
+    },
+    {
+      "path": "gemm_code/baseline_template/cuda_kernel.cuh",
+      "bytes": 1919,
+      "sha256": "d0388748430a8a89ffd8051845f7b7f8f8b085ed202bc8899837334dd0612fae"
+    },
+    {
+      "path": "gemm_code/cpu_baseline_template/cpu_kernel.c",
+      "bytes": 658,
+      "sha256": "789939b2e674130e298348d367f711c2cb88dd239ab86fa0a4d7b6edd14caff4"
+    },
+    {
+      "path": "gemm_code/cpu_baseline_template/kernel.h",
+      "bytes": 166,
+      "sha256": "0a9cb0cadd219820725781278391a2a399e07bd0ff659cb4748cce3cbb6a56ec"
+    },
+    {
+      "path": "gemm_code/cpu_baseline_template/main.c",
+      "bytes": 6024,
+      "sha256": "2a0a5647b3f3e1bd3c455e24580cfd8fe8621d25d676b1ff03691cba8537a265"
+    },
+    {
+      "path": "gemm_code/cpu_skeleton/build.bat",
+      "bytes": 384,
+      "sha256": "4dce413a7336d04369e97d5994bcc8153c14e7aff36e643d40bee31b6968950d"
+    },
+    {
+      "path": "gemm_code/cpu_skeleton/build_linux.sh",
+      "bytes": 161,
+      "sha256": "ad20b897111011a87c1f21bfdbb8bd491250bf5c9ccc43d4642e3b7af333dea1"
+    },
+    {
+      "path": "gemm_code/cpu_skeleton/cpu_kernel.c",
+      "bytes": 9597,
+      "sha256": "8f7347e9e9e8eba903522933b9b6454495d250309b3c47f215df40f7c5342511"
+    },
+    {
+      "path": "gemm_code/cpu_skeleton/kernel.h",
+      "bytes": 172,
+      "sha256": "76e0e673cd78332f376efced7bceb6a4f874f490abec024cfcd773cac836f383"
+    },
+    {
+      "path": "gemm_code/cpu_skeleton/main.c",
+      "bytes": 6185,
+      "sha256": "a17dbcb28fa884c0a140758c0cce36911f304f6e2e402ac8ad4aa6eab0634639"
+    },
+    {
+      "path": "gemm_code/cpu_skeleton/README.md",
+      "bytes": 834,
+      "sha256": "366770a6f27262ceec27a0d9153ca66e2e36748ce52b4fb1330434e246818fc6"
+    },
+    {
+      "path": "gemm_code/skeleton/build.bat",
+      "bytes": 901,
+      "sha256": "36c4220cd96baf224675fe6dcded9f9ca414bdcadb4af1edbc45830cfdc113ec"
+    },
+    {
+      "path": "gemm_code/skeleton/build_linux.sh",
+      "bytes": 1635,
+      "sha256": "1ab07021416857376fd1f9656845c7c7da22c6e4ce46f046faae49854736566a"
+    },
+    {
+      "path": "gemm_code/skeleton/cuda_kernel.cuh",
+      "bytes": 2000,
+      "sha256": "95003f14225c0f9647d1b3783450d2b48f5a42a380f15244826c8b0071a28ad6"
+    },
+    {
+      "path": "gemm_code/skeleton/kernel.h",
+      "bytes": 150,
+      "sha256": "a0a8b1a1b6478e24c0b9c2a55e79b3ca63d0bb20953003069f416bf501ffcee1"
+    },
+    {
+      "path": "gemm_code/skeleton/main.cpp",
+      "bytes": 8295,
+      "sha256": "0aa30c5a17eb5883cb378a5c6ed0a852427959ead3803ed0fc2d2c85e90f0b61"
+    },
+    {
+      "path": "gemm_code/skeleton/README.md",
+      "bytes": 1477,
+      "sha256": "c4bbc6ddc056ccc77c89e6559afa41934c4411e5c0aba78041696835cbbc63ab"
+    },
+    {
+      "path": "gemm_code/skeleton_template/cuda_kernel.cuh",
+      "bytes": 7338,
+      "sha256": "58c3d8010deb07b0ba24a7c1e89f16ca63693d0d57b2af33b49c29a4749350af"
+    },
+    {
+      "path": "generate_ir/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "generate_ir/cuda_device_probe.py",
+      "bytes": 2723,
+      "sha256": "b5114fd6d385a67b6b33783881742aac1f0205a13e7b544ee4347c528127663c"
+    },
+    {
+      "path": "generate_ir/gpu_architecture.py",
+      "bytes": 10803,
+      "sha256": "d6b95dc3664fbd07ed87cb462d92467829d56149afb1fa60d786de398334f5fb"
+    },
+    {
+      "path": "generate_ir/gpu_resources.py",
+      "bytes": 4274,
+      "sha256": "04c139ad0040ce3341d6dcd37a603c6e2dabebc930a5ed013331354b1d77e04f"
+    },
+    {
+      "path": "generate_ir/ir_checker.py",
+      "bytes": 44289,
+      "sha256": "36590f13a561b0d85c8698268b6bad646a40b0397160b83112f88497f7757a76"
+    },
+    {
+      "path": "generate_ir/ir_extraction.py",
+      "bytes": 23219,
+      "sha256": "6931bb64ec625e849b191e82a4c9128bf57759d62996529d7ee9a07fcf767463"
+    },
+    {
+      "path": "generate_ir/ir_types.py",
+      "bytes": 2650,
+      "sha256": "2cece61f8225abd214eac053813067e95569ddf874fd697ed25e2188be1ca4c5"
+    },
+    {
+      "path": "generate_ir/stage_controller.py",
+      "bytes": 77589,
+      "sha256": "7d4af6f051dc59ca489e4c5cc51947fbac35300bee1c9b084535058c25036f4d"
+    },
+    {
+      "path": "generate_ir/strategy_filter.py",
+      "bytes": 3985,
+      "sha256": "7dfcb06fc8428cdf96717379f8272a95ba0b07b37d79606985a70c39fdef8942"
+    },
+    {
+      "path": "generate_ir/strategy_index_filter.py",
+      "bytes": 19665,
+      "sha256": "e0049a22a5dcba3f29b53887127352f1df099993302d297a02113f886033701c"
+    },
+    {
+      "path": "generate_ir/strategy_library_merge.py",
+      "bytes": 19652,
+      "sha256": "7b2f0138cebcf1427fd350eb923b271867aba15d410472ba98b7beb6fa38a6bd"
+    },
+    {
+      "path": "generate_ir/tiling_planner.py",
+      "bytes": 17090,
+      "sha256": "579c7537be715347fdad4365fc7e53531c92b53a4a4b0fec693447c1adb8e7e8"
+    },
+    {
+      "path": "generate_ir/unlock_feedback.py",
+      "bytes": 1534,
+      "sha256": "7555714710927c88a3a5c93fcd0c3eb15551407379f1b50a46b39208c1c8b07c"
+    },
+    {
+      "path": "H800/autocomp/autocomp_1024.cu",
+      "bytes": 4632,
+      "sha256": "525e2c0ac91a3e8ec6a574f36abbd68b5d336b74351446b9e88624ce5ec9fe3b"
+    },
+    {
+      "path": "H800/autocomp/autocomp_1024_adapter.cu",
+      "bytes": 230,
+      "sha256": "10cf4a542972d92b1c00eecd991eea9fb91b6ac0437bf275b3c9665817026530"
+    },
+    {
+      "path": "H800/autocomp/autocomp_2048.cu",
+      "bytes": 5147,
+      "sha256": "70e7d0fad8d22994a8a8405eff523a25c71b72f5350d744f7434ae6b2cf3696f"
+    },
+    {
+      "path": "H800/autocomp/autocomp_2048_adapter.cu",
+      "bytes": 230,
+      "sha256": "82d1eedd09ac5357d7d85396f9c648cef61af0e8427be4b4ea476ad2350f5f38"
+    },
+    {
+      "path": "H800/autocomp/autocomp_4096.cu",
+      "bytes": 8483,
+      "sha256": "719e4e69b86b30f007a6d0f0429d446307bfd6a0ccfe1b45ee5c1b2fdac38e4c"
+    },
+    {
+      "path": "H800/autocomp/autocomp_4096_adapter.cu",
+      "bytes": 230,
+      "sha256": "9316aa80fa2185196c36ceb55938f3a0ed2e7a343da127e42eb663267dd9689d"
+    },
+    {
+      "path": "H800/autocomp/autocomp_512.cu",
+      "bytes": 5334,
+      "sha256": "3b05b67b0f655e1ad8a0fbf4e66bc24d5d98e6a6198adfa0ba1b4d43bc6e1630"
+    },
+    {
+      "path": "H800/autocomp/autocomp_512_adapter.cu",
+      "bytes": 226,
+      "sha256": "6647123cc8524d4bc6df3e3220257424e1bc54dcf80af755f3840899409a9759"
+    },
+    {
+      "path": "H800/autocomp/autocomp_dispatch.cu",
+      "bytes": 444,
+      "sha256": "b8dcda74d836646550ae7818070ac9dc51ab126a1df9d00eb86baae077decf53"
+    },
+    {
+      "path": "H800/autocomp/kernel.h",
+      "bytes": 115,
+      "sha256": "b931506ce1aa065c2682075040c677c14630866e7dab88109af88f64d915e529"
+    },
+    {
+      "path": "H800/autocomp/kernel_variants.h",
+      "bytes": 329,
+      "sha256": "879840bf3b5805399ac61e8a15da20b0fbe1304fca806251d450dcf18b593434"
+    },
+    {
+      "path": "H800/autocomp/main.cpp",
+      "bytes": 5498,
+      "sha256": "7455ec2fb1d4aa8e74fc33bd26401469b3998633404f885981aad7e05f376b35"
+    },
+    {
+      "path": "H800/autocomp/Makefile",
+      "bytes": 1387,
+      "sha256": "4326d4a577802d2d4d6a54c8d517bcdd93cd53f95fb908276e998ba751e83f07"
+    },
+    {
+      "path": "H800/autocomp/README.md",
+      "bytes": 169,
+      "sha256": "6b63c5babe222e57a0597d0936a6158571ad80b1f554547ccd4907ef1bd74c85"
+    },
+    {
+      "path": "H800/autocomp-repaired/autocomp_1024.cu",
+      "bytes": 4755,
+      "sha256": "3c8d0f1af68b1e35a34727201edf439692413413cd6c0e8f3d0b42af5b0faf9c"
+    },
+    {
+      "path": "H800/autocomp-repaired/autocomp_1024_adapter.cu",
+      "bytes": 230,
+      "sha256": "10cf4a542972d92b1c00eecd991eea9fb91b6ac0437bf275b3c9665817026530"
+    },
+    {
+      "path": "H800/autocomp-repaired/autocomp_2048.cu",
+      "bytes": 5906,
+      "sha256": "e604639ab3647bfd49425839d0e153c89e3c284b18ed242d1e5bbb41d698d25f"
+    },
+    {
+      "path": "H800/autocomp-repaired/autocomp_2048_adapter.cu",
+      "bytes": 230,
+      "sha256": "82d1eedd09ac5357d7d85396f9c648cef61af0e8427be4b4ea476ad2350f5f38"
+    },
+    {
+      "path": "H800/autocomp-repaired/autocomp_4096.cu",
+      "bytes": 8468,
+      "sha256": "2b36b63302dfccaf50e637901de0adfc1d555e220bb0a71c75409d442820ceb7"
+    },
+    {
+      "path": "H800/autocomp-repaired/autocomp_4096_adapter.cu",
+      "bytes": 230,
+      "sha256": "9316aa80fa2185196c36ceb55938f3a0ed2e7a343da127e42eb663267dd9689d"
+    },
+    {
+      "path": "H800/autocomp-repaired/autocomp_512.cu",
+      "bytes": 5334,
+      "sha256": "3b05b67b0f655e1ad8a0fbf4e66bc24d5d98e6a6198adfa0ba1b4d43bc6e1630"
+    },
+    {
+      "path": "H800/autocomp-repaired/autocomp_512_adapter.cu",
+      "bytes": 226,
+      "sha256": "6647123cc8524d4bc6df3e3220257424e1bc54dcf80af755f3840899409a9759"
+    },
+    {
+      "path": "H800/autocomp-repaired/autocomp_dispatch.cu",
+      "bytes": 444,
+      "sha256": "b8dcda74d836646550ae7818070ac9dc51ab126a1df9d00eb86baae077decf53"
+    },
+    {
+      "path": "H800/autocomp-repaired/kernel.h",
+      "bytes": 115,
+      "sha256": "b931506ce1aa065c2682075040c677c14630866e7dab88109af88f64d915e529"
+    },
+    {
+      "path": "H800/autocomp-repaired/kernel_variants.h",
+      "bytes": 329,
+      "sha256": "879840bf3b5805399ac61e8a15da20b0fbe1304fca806251d450dcf18b593434"
+    },
+    {
+      "path": "H800/autocomp-repaired/main.cpp",
+      "bytes": 5498,
+      "sha256": "7455ec2fb1d4aa8e74fc33bd26401469b3998633404f885981aad7e05f376b35"
+    },
+    {
+      "path": "H800/autocomp-repaired/Makefile",
+      "bytes": 1387,
+      "sha256": "4326d4a577802d2d4d6a54c8d517bcdd93cd53f95fb908276e998ba751e83f07"
+    },
+    {
+      "path": "H800/autocomp-repaired/README.md",
+      "bytes": 169,
+      "sha256": "6b63c5babe222e57a0597d0936a6158571ad80b1f554547ccd4907ef1bd74c85"
+    },
+    {
+      "path": "H800/LLM/cuda_kernel.cuh",
+      "bytes": 8720,
+      "sha256": "28027a08434c71b858a5589acba7255b186c75a3aa6029a39fd26fd570d5ff11"
+    },
+    {
+      "path": "H800/LLM/cuda_kernel_1024.cuh",
+      "bytes": 293,
+      "sha256": "1f8f6dd16749a4972e9d2f044617a01cbe90745f7a16e5002f2e51b5c400b176"
+    },
+    {
+      "path": "H800/LLM/cuda_kernel_2048.cuh",
+      "bytes": 293,
+      "sha256": "adf6ca8d985b8353a195d0e1383cb3939e550309f4b54dfa86c9a37f6dd64cd0"
+    },
+    {
+      "path": "H800/LLM/cuda_kernel_4096.cuh",
+      "bytes": 293,
+      "sha256": "2af4ba43707bcc16ccb96f037aee12f5292e435733a99396783399f59dfe9ebd"
+    },
+    {
+      "path": "H800/LLM/cuda_kernel_512.cuh",
+      "bytes": 293,
+      "sha256": "7b3970a0afe122b11b3f205a2b92a356353d326685bd05998351b597ad50b812"
+    },
+    {
+      "path": "H800/LLM/kernel.h",
+      "bytes": 119,
+      "sha256": "ff8459a68e7d26ce79880cd03c575b80b1a0e59d03a60af77a82520acadf25c5"
+    },
+    {
+      "path": "H800/LLM/kernel_dispatch.cu",
+      "bytes": 1116,
+      "sha256": "f306ee976de93d3a4f6e8f370df54dc9e55f48f8828d7766347521a142b1d888"
+    },
+    {
+      "path": "H800/LLM/kernel_variants.h",
+      "bytes": 421,
+      "sha256": "d6be3c8e1dc5ec4ab29c35a255cdab55fac4b030545d851d8281bdc2a2c52494"
+    },
+    {
+      "path": "H800/LLM/main.cpp",
+      "bytes": 8377,
+      "sha256": "cede41df7691984bfc31191190ba3a0d109aaaef0b0d452dfa7617f4ce4470c5"
+    },
+    {
+      "path": "H800/LLM/Makefile",
+      "bytes": 2955,
+      "sha256": "cb03990a61a5b5d4d26e4411ff46baa7fdcd2d6ab954be8718c94e124e224ea4"
+    },
+    {
+      "path": "H800/QIMENG/CUDA/cuda_kernel.cuh",
+      "bytes": 5943,
+      "sha256": "6d8092a35696dbb7dfbf55074983ddbe87ec834b447f462c3ec8711332291206"
+    },
+    {
+      "path": "H800/QIMENG/CUDA/kernel.cu",
+      "bytes": 938,
+      "sha256": "1eae78194e495b823f923ac968f2cccb6576cbd5f1717af1147658b577ae0e02"
+    },
+    {
+      "path": "H800/QIMENG/CUDA/kernel.h",
+      "bytes": 122,
+      "sha256": "8f912b6a1313d7f37de8ea4d950c5a4ebce7c6b024ddcc62e13ff1fba8a42570"
+    },
+    {
+      "path": "H800/QIMENG/CUDA/kernel_128_128.cu",
+      "bytes": 815,
+      "sha256": "ddef2ebb14aaac829dd91cecc222e639ebfe4218cd2cd411f1d0feda188b0833"
+    },
+    {
+      "path": "H800/QIMENG/CUDA/kernel_32_64.cu",
+      "bytes": 811,
+      "sha256": "a5f1ecdc653598bd7b9aa37d3e4efff169c72fdfa95c4cd8a8b5ebd66cd86d14"
+    },
+    {
+      "path": "H800/QIMENG/CUDA/kernel_64_128.cu",
+      "bytes": 809,
+      "sha256": "a66b16f9483e3fce904015c83b4ac54f1e115ac9b45e35bd5a56ee7b902ee2f3"
+    },
+    {
+      "path": "H800/QIMENG/CUDA/kernel_64_64.cu",
+      "bytes": 812,
+      "sha256": "dd89749b2e92e997c92129dcd8a3a41ce7211b8a88cfba80dbffceb710c2876d"
+    },
+    {
+      "path": "H800/QIMENG/CUDA/main.cpp",
+      "bytes": 4837,
+      "sha256": "55dcfa6c4e8b63cb94882ed2a269eac33e8ec1744f4c44d43ca705febdac728c"
+    },
+    {
+      "path": "H800/QIMENG/CUDA/Makefile",
+      "bytes": 283,
+      "sha256": "a48f35b99eede4576cd10af7468213fbfd56064affdcaacd01ad4ac2f2b8d655"
+    },
+    {
+      "path": "H800/reflexion/autocomp_1024_adapter.cu",
+      "bytes": 241,
+      "sha256": "e38b079aa44aef205a402179f104731e6c69e91d302af39a8459075b24a63924"
+    },
+    {
+      "path": "H800/reflexion/autocomp_2048_adapter.cu",
+      "bytes": 241,
+      "sha256": "ba3ae01dad35ded67baa3fe4f430a336d61a6e0bc9c9c47b34d7720429f6d244"
+    },
+    {
+      "path": "H800/reflexion/autocomp_4096_adapter.cu",
+      "bytes": 241,
+      "sha256": "8a963269b8b47e436e70a31816a02249b823611c322538faae2b7349420badec"
+    },
+    {
+      "path": "H800/reflexion/autocomp_512_adapter.cu",
+      "bytes": 237,
+      "sha256": "1f8608e7105e05b138acb729dbe5fc904b17e4b522d586685b3851793796f9d6"
+    },
+    {
+      "path": "H800/reflexion/autocomp_dispatch.cu",
+      "bytes": 444,
+      "sha256": "b8dcda74d836646550ae7818070ac9dc51ab126a1df9d00eb86baae077decf53"
+    },
+    {
+      "path": "H800/reflexion/kernel.h",
+      "bytes": 115,
+      "sha256": "b931506ce1aa065c2682075040c677c14630866e7dab88109af88f64d915e529"
+    },
+    {
+      "path": "H800/reflexion/kernel_variants.h",
+      "bytes": 569,
+      "sha256": "5f1202d4931c9dc0b33a0879ca9a6500b4ade640ff713a69dc7a22de2f224fca"
+    },
+    {
+      "path": "H800/reflexion/main.cpp",
+      "bytes": 5498,
+      "sha256": "7455ec2fb1d4aa8e74fc33bd26401469b3998633404f885981aad7e05f376b35"
+    },
+    {
+      "path": "H800/reflexion/Makefile",
+      "bytes": 405,
+      "sha256": "410227f7a314bce685f6cef3248163555cc34ec9f60f7347a615a405eec8c3ea"
+    },
+    {
+      "path": "H800/reflexion/README.md",
+      "bytes": 1123,
+      "sha256": "bef423dae4d28c218820e3585eccf40f050b2658af8c69076f5a24bb6c827c04"
+    },
+    {
+      "path": "H800/reflexion/reflexion_1024_adapter.cu",
+      "bytes": 245,
+      "sha256": "c0b84fd45ac491fa7c7b22d530f57f34c3bc1000afa8f53f54d75ce31a27a0db"
+    },
+    {
+      "path": "H800/reflexion/reflexion_2048_adapter.cu",
+      "bytes": 262,
+      "sha256": "65c1c8efddf786caf7c55a737f5856867b06c40661cc1973fd1b89b9357b815d"
+    },
+    {
+      "path": "H800/reflexion/reflexion_512_adapter.cu",
+      "bytes": 241,
+      "sha256": "c20ce2fc2d3d0074a164b3a5f67b400090b901d7aae0378bf3ef36c27d4a2191"
+    },
+    {
+      "path": "H800/reflexion/reflexion_dispatch.cu",
+      "bytes": 452,
+      "sha256": "495624cee2b120f436d886bd214f5af7c8a6028d5925e4e7c6b353fea6273fcf"
+    },
+    {
+      "path": "H800/reflexion-repaired/kernel.h",
+      "bytes": 115,
+      "sha256": "b931506ce1aa065c2682075040c677c14630866e7dab88109af88f64d915e529"
+    },
+    {
+      "path": "H800/reflexion-repaired/kernel_variants.h",
+      "bytes": 333,
+      "sha256": "ee157192359cd9ec30356dfcded89aa2ad8e582c3db875ce8c477796e68e0287"
+    },
+    {
+      "path": "H800/reflexion-repaired/main.cpp",
+      "bytes": 5498,
+      "sha256": "7455ec2fb1d4aa8e74fc33bd26401469b3998633404f885981aad7e05f376b35"
+    },
+    {
+      "path": "H800/reflexion-repaired/Makefile",
+      "bytes": 1395,
+      "sha256": "cdfe7908a772cad0d4d2fb52c776577e83d6ddf267fe0f7e8a1c1d70bee96256"
+    },
+    {
+      "path": "H800/reflexion-repaired/README.md",
+      "bytes": 259,
+      "sha256": "94bd850cafafa1966d26d6badacb89848f80d12a8b9b20390c6544329beb66c8"
+    },
+    {
+      "path": "H800/reflexion-repaired/reflexion_1024.cu",
+      "bytes": 3215,
+      "sha256": "c9124cfcc3c274eaec7cc1c6eea01f0e5d1463e3aa64a7099e484017166b69f5"
+    },
+    {
+      "path": "H800/reflexion-repaired/reflexion_1024_adapter.cu",
+      "bytes": 234,
+      "sha256": "f7ef6cd782956357fb75714952cbd95e1abe5ed9b8b1994b667ce770da70f600"
+    },
+    {
+      "path": "H800/reflexion-repaired/reflexion_2048.cu",
+      "bytes": 9454,
+      "sha256": "f9af8ae3d15138e53de90d887fc6cd4d2d87b42ebd6414195b292a8d1ce1c007"
+    },
+    {
+      "path": "H800/reflexion-repaired/reflexion_2048_adapter.cu",
+      "bytes": 251,
+      "sha256": "885d0c432f3cfce89787ca5a5f922904239bd418687aff68ec166fc0e3c65cf5"
+    },
+    {
+      "path": "H800/reflexion-repaired/reflexion_4096.cu",
+      "bytes": 4678,
+      "sha256": "3379702abd062812f0a71d30d6bb8e91dc4a9740bb22228771b9a232eb977fe4"
+    },
+    {
+      "path": "H800/reflexion-repaired/reflexion_4096_adapter.cu",
+      "bytes": 234,
+      "sha256": "cdca1048cd6e09fdcd30674b7ff68ee7fb257776b0f576ac118f3b2a6c180c82"
+    },
+    {
+      "path": "H800/reflexion-repaired/reflexion_512.cu",
+      "bytes": 8039,
+      "sha256": "7a0f8386a729538348bc75ddfcd51a36002dec744214c06bcfe8c9091bdf69b8"
+    },
+    {
+      "path": "H800/reflexion-repaired/reflexion_512_adapter.cu",
+      "bytes": 230,
+      "sha256": "9fd19810106a757d3cf11e971f8b54c7ed60d65aeb2ada72e8fa30468e3efedc"
+    },
+    {
+      "path": "H800/reflexion-repaired/reflexion_dispatch.cu",
+      "bytes": 474,
+      "sha256": "f6c4590c3b2cc835f0066efb353d43f6057c2cb802e4d3eeb68851415d65d356"
+    },
+    {
+      "path": "H800/SCOPE/cuda_kernel_1024.cuh",
+      "bytes": 7824,
+      "sha256": "4e56c22d21fb39c77c9bbc4f53b80cca834bd25185b28817f9b21670ace2a1f3"
+    },
+    {
+      "path": "H800/SCOPE/cuda_kernel_2048.cuh",
+      "bytes": 9746,
+      "sha256": "dbf46719341940a41a72344811b4da85b073ddfa3029e38d55bb96f790965b4d"
+    },
+    {
+      "path": "H800/SCOPE/cuda_kernel_4096.cuh",
+      "bytes": 9746,
+      "sha256": "dbf46719341940a41a72344811b4da85b073ddfa3029e38d55bb96f790965b4d"
+    },
+    {
+      "path": "H800/SCOPE/cuda_kernel_512.cuh",
+      "bytes": 7823,
+      "sha256": "5bed89cd441e597c429201c34671e0e39096e4e7bbea9a565885cdf954f7b9b6"
+    },
+    {
+      "path": "H800/SCOPE/kernel.h",
+      "bytes": 166,
+      "sha256": "6de96408771b35154a41fd36fafb53d5349e583d28ee183289420e6f4c05fa65"
+    },
+    {
+      "path": "H800/SCOPE/kernel_dispatch.cu",
+      "bytes": 1071,
+      "sha256": "c7c49062aa333336560f6c17a5945c9412d75099ab74cda1154917bfcc7fdc40"
+    },
+    {
+      "path": "H800/SCOPE/kernel_variants.h",
+      "bytes": 407,
+      "sha256": "712eaaa1ef2e77238c14e5e9027e43453404a001d41feee4fab125996239ad03"
+    },
+    {
+      "path": "H800/SCOPE/main.cpp",
+      "bytes": 6962,
+      "sha256": "2a2257aa4b696ffb00f2673f6a090019808f9cd983c1b9c7039e5f64dc0ac952"
+    },
+    {
+      "path": "H800/SCOPE/Makefile",
+      "bytes": 3296,
+      "sha256": "dda6ef643572c21c814c92f9d5e719431df6a0ffc03e243cacdc422739dc24e1"
+    },
+    {
+      "path": "llm/__init__.py",
+      "bytes": 516,
+      "sha256": "57b9f3a3349fd7c1447d3e6ff13ab6fb4a1b9cd4bc2aae936b2121496c6dd9cb"
+    },
+    {
+      "path": "llm/base.py",
+      "bytes": 375,
+      "sha256": "e72ddbf8432be2808d25020029a82fe7a6aa3e853f7c46416d3ad6dfb27ec9de"
+    },
+    {
+      "path": "llm/c_code_generator.py",
+      "bytes": 30443,
+      "sha256": "83189ab8cd30a1a40fe8d528acefc9d70a34f6e0add3c0d69b26641561bcaba0"
+    },
+    {
+      "path": "llm/concrete_code_generator.py",
+      "bytes": 37543,
+      "sha256": "fbded49ce47c7c722da07d17130ad55eb981528ff7fd7ed8daada1353d08e6ef"
+    },
+    {
+      "path": "llm/implementation_context.py",
+      "bytes": 8383,
+      "sha256": "79e966fa236333d1738f5a62112e5d3aa077c83428b8e578ee57f713040c2ff0"
+    },
+    {
+      "path": "llm/openai_client.py",
+      "bytes": 14916,
+      "sha256": "88a0160db071a697e2c851b0657725118120b53ed3a3b504311b488f572b86c0"
+    },
+    {
+      "path": "llm/patch_contract.py",
+      "bytes": 2299,
+      "sha256": "3f7d6dd51ba5bdde0dabd8fcabecbad78464d54642bcf9877d7a5135ee342e57"
+    },
+    {
+      "path": "llm/patch_generator.py",
+      "bytes": 22132,
+      "sha256": "5efec3df85f864fec4cf849e29b0ebfd282aad1eceb739450666abe728a2b40f"
+    },
+    {
+      "path": "llm/prompts/generate_concrete_code_prompt.txt",
+      "bytes": 6234,
+      "sha256": "497dd0330b796255de433f4c1adf741c6c9efff01ba78e35d9f25e027d3dcc03"
+    },
+    {
+      "path": "llm/prompts/generate_cpu_c_code_prompt.txt",
+      "bytes": 8810,
+      "sha256": "91164abba6de521c183894530eca1f9a93a3a6971a7fd16b7c275b16a562093c"
+    },
+    {
+      "path": "llm/prompts/generate_cpu_c_patch_prompt.txt",
+      "bytes": 3083,
+      "sha256": "a2c6ad1e0afb0c41bd72425ce8d8cc8cb33887918584ddfa7174bccfc4f54ed8"
+    },
+    {
+      "path": "llm/prompts/generate_patch_prompt.txt",
+      "bytes": 3923,
+      "sha256": "e90f8f44deb6c31a85cf49805ee5e587d3e734a942f68e90887b6030f8723af0"
+    },
+    {
+      "path": "llm/prompts/get_micro_strategy_prompt.txt",
+      "bytes": 1462,
+      "sha256": "f045eafd2ba841b944296fa27f38e7c320a28e8f87a8d27e376ac47adc820315"
+    },
+    {
+      "path": "llm/prompts/get_strategy_prompt.txt",
+      "bytes": 869,
+      "sha256": "32d45d30d57b9c349d861c04ca12d29df07d8cd416f346a84fc584256f7b1b57"
+    },
+    {
+      "path": "llm/prompts/plan_unlock_batches_prompt.txt",
+      "bytes": 2229,
+      "sha256": "c5bd1c2df7f69f9829543a0e2d6ae1a466d81bf2a365b1111960445a7b959aac"
+    },
+    {
+      "path": "llm/prompts/repair_locked_cuda_full_prompt.txt",
+      "bytes": 1462,
+      "sha256": "44577575e6334d3f93e611a094e85f0eae2f8e967f1e731554c7528d7ff793c3"
+    },
+    {
+      "path": "llm/prompts/repair_locked_cuda_prompt.txt",
+      "bytes": 3059,
+      "sha256": "672fa4b1df8814d50b3a4d4da3c6fbc64033dbc51225202a3835a26b24f68351"
+    },
+    {
+      "path": "llm/prompts/select_joint_tiling_prompt.txt",
+      "bytes": 2312,
+      "sha256": "d50030e5736dde5216a006bede3516cf6d17522c004631a4c3f0125f5e3ecc06"
+    },
+    {
+      "path": "llm/provider_config.py",
+      "bytes": 1186,
+      "sha256": "05879559cd9c5eb24fab77533f2e5f87bb9ec2aaaa10f2be9e5d77be56567d2a"
+    },
+    {
+      "path": "llm/strategy_examples.py",
+      "bytes": 3524,
+      "sha256": "8f07ce94605389b0d820bd07081a046ae764b21dbed3fb86fdbe203b650a3a10"
+    },
+    {
+      "path": "llm/strategy_selector.py",
+      "bytes": 19008,
+      "sha256": "6d97237a2ab8b2ed86779678f1d4df11a67a1a181f1794fc236e50018d787775"
+    },
+    {
+      "path": "llm/structured.py",
+      "bytes": 538,
+      "sha256": "14d85363ee90f1e7d998f4e2f3ce5cbfa701f843eca6bd08ce72c2c4e33b5c3b"
+    },
+    {
+      "path": "llm/unlock_category_selector.py",
+      "bytes": 7251,
+      "sha256": "28e51769aa78450e291405b0dae491360cc3e02c1ff581ac5aa0048979a7288b"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2585,
+      "sha256": "0f9ca0284ac469e7d371a93daccfb27e54d81bd3ae73d124c5fff06fba662f12"
+    },
+    {
+      "path": "requirements.txt",
+      "bytes": 395,
+      "sha256": "876f3b0297dbec93a281577a690644ce4360cc0165b8c56fdf3f63257ee8a384"
+    },
+    {
+      "path": "scripts/build_rq2_complete_report.py",
+      "bytes": 9609,
+      "sha256": "2f63ca06b8aa72fb687065132b07078791d1d3efafbd8ce6143d92ff2fecb18d"
+    },
+    {
+      "path": "scripts/prepare_github_release.py",
+      "bytes": 13925,
+      "sha256": "8ae4f2448a4cb4a0fa1cf75d39483011052e684a42c4626974c41c755c003262"
+    },
+    {
+      "path": "scripts/summarize_intent_only_repaired.py",
+      "bytes": 5805,
+      "sha256": "ae59f8ecf7d2862e6ef8a8d5496e329e9c0e28980a7c522d1da93b221a3f138b"
+    },
+    {
+      "path": "scripts/summarize_rq_experiments.py",
+      "bytes": 7953,
+      "sha256": "cecc9f2d4f3796eafc3422f439b31aac25607b86e1b113a0689bd319beda600c"
+    },
+    {
+      "path": "specialization/__init__.py",
+      "bytes": 79,
+      "sha256": "d8db6b8374ed133e3c8c6e95ba76fc5ab0bf8e224c812f53499b1718d40a53f3"
+    },
+    {
+      "path": "specialization/dynamic_shared.py",
+      "bytes": 2627,
+      "sha256": "6ba1de786dfd40c588df035702d0c9600ad05e0e01b7c127c7b5f8d186a1d571"
+    },
+    {
+      "path": "specialization/kernel_controls.py",
+      "bytes": 6344,
+      "sha256": "d72162474c514e4000a71cca6f4c7a8da63aa24a08bbd4d4b0ba2a7acd98460a"
+    },
+    {
+      "path": "specialization/padding_variants.py",
+      "bytes": 2715,
+      "sha256": "eb4b62b2b106838a06cf3f84bced59282e5616e7dbe4fb7c989d9c4adeaf991b"
+    },
+    {
+      "path": "specialization/shape_search.py",
+      "bytes": 18362,
+      "sha256": "0140106b86452e7000ec8f9b06ff86d9c7128b9ca34f9e69655a9861c2a4fe01"
+    },
+    {
+      "path": "specialization/shape_specialization.py",
+      "bytes": 3677,
+      "sha256": "0ce6f738bff5344fbf5733d0e3ba67c0af52fe41f520b6c762ba02db17603d7c"
+    },
+    {
+      "path": "specialization/simt_family.cuh",
+      "bytes": 6366,
+      "sha256": "850cf376de01a7d63edd7d32a3cdf1c10fcf306ef53d1f1607479f9978a7290c"
+    },
+    {
+      "path": "specialization/terminal_tuning.py",
+      "bytes": 4761,
+      "sha256": "1921a6668a19c8752a38069c55cfd76ea5d61542ec376ff5419da0c7d07c20bf"
+    },
+    {
+      "path": "specialization/tile_enumeration.py",
+      "bytes": 1770,
+      "sha256": "a0afb48804154515d0b0a50db8bf39243719f85ce74493d3a0ad4f90604bdb2f"
+    },
+    {
+      "path": "specialization/tile_range_planner.py",
+      "bytes": 5917,
+      "sha256": "60c5466cebe7c5bd865c6057d54257a8f370ec2ec277cb3539b5466f179289b7"
+    },
+    {
+      "path": "specialization/top1_shape_transfer.py",
+      "bytes": 6486,
+      "sha256": "86722e900dabe37041572383b3ab3d00f7e3317d7b034d11533743a7f753670a"
+    },
+    {
+      "path": "tests/cuda_check_alpha_beta.cu",
+      "bytes": 2124,
+      "sha256": "f40a477448146d435f7a279dd6c3892057a1f09bfef6b9c49eab7cc2feb521db"
+    },
+    {
+      "path": "tests/fixtures/remaining_chain1.cuh",
+      "bytes": 9941,
+      "sha256": "23e70b8f80248115dcba9c2a9cf1ed2e94b551bde6aaaa6e1a8d7754d7cfd697"
+    },
+    {
+      "path": "tests/fixtures/remaining_chain3.cuh",
+      "bytes": 9825,
+      "sha256": "225ee62f7065f9619fd77bdd523922dda8943eae1f5f6d4eaa82a1ab1fba2906"
+    },
+    {
+      "path": "tests/fixtures/repair_20260916/case1/cuda_kernel.cuh",
+      "bytes": 7439,
+      "sha256": "72355c57a52737ab70d039f7dbc59a4d15cf20298dbec173c3c4174a39b47505"
+    },
+    {
+      "path": "tests/fixtures/repair_20260916/case1/failed_ir.json",
+      "bytes": 423275,
+      "sha256": "76263b8a68aac075f92a22e1b247f67c73a7f1360893c4a45c39a097d0298ff8"
+    },
+    {
+      "path": "tests/fixtures/repair_20260916/case1/kernel.h",
+      "bytes": 150,
+      "sha256": "a0a8b1a1b6478e24c0b9c2a55e79b3ca63d0bb20953003069f416bf501ffcee1"
+    },
+    {
+      "path": "tests/fixtures/repair_20260916/case1/main.cpp",
+      "bytes": 6962,
+      "sha256": "2a2257aa4b696ffb00f2673f6a090019808f9cd983c1b9c7039e5f64dc0ac952"
+    },
+    {
+      "path": "tests/fixtures/repair_20260916/case2/cuda_kernel.cuh",
+      "bytes": 7786,
+      "sha256": "19ab0760b23968b971af6ecb453f24baee94ced71d8342bc6e7c26a45dfb84f1"
+    },
+    {
+      "path": "tests/fixtures/repair_20260916/case2/failed_ir.json",
+      "bytes": 374893,
+      "sha256": "f15c57bc50eb3a675cb1b9fafa2a17c498e3cac535210cc8d399c2697aaaf32f"
+    },
+    {
+      "path": "tests/fixtures/repair_20260916/case2/kernel.h",
+      "bytes": 150,
+      "sha256": "a0a8b1a1b6478e24c0b9c2a55e79b3ca63d0bb20953003069f416bf501ffcee1"
+    },
+    {
+      "path": "tests/fixtures/repair_20260916/case2/main.cpp",
+      "bytes": 6962,
+      "sha256": "2a2257aa4b696ffb00f2673f6a090019808f9cd983c1b9c7039e5f64dc0ac952"
+    },
+    {
+      "path": "tests/fixtures/repair_20260916/case3/cuda_kernel.cuh",
+      "bytes": 8542,
+      "sha256": "053511294783ce7356001adc0b8aa3c59ae4f4f58ad4ec5ffdf383a8c4d0b47d"
+    },
+    {
+      "path": "tests/fixtures/repair_20260916/case3/failed_ir.json",
+      "bytes": 408597,
+      "sha256": "08c93f279893983197473c8e8bbeb75997bb3ce596d79c726b99a00b21ea55cc"
+    },
+    {
+      "path": "tests/fixtures/repair_20260916/case3/kernel.h",
+      "bytes": 150,
+      "sha256": "a0a8b1a1b6478e24c0b9c2a55e79b3ca63d0bb20953003069f416bf501ffcee1"
+    },
+    {
+      "path": "tests/fixtures/repair_20260916/case3/main.cpp",
+      "bytes": 6962,
+      "sha256": "2a2257aa4b696ffb00f2673f6a090019808f9cd983c1b9c7039e5f64dc0ac952"
+    },
+    {
+      "path": "tests/fixtures/repair_20260916/README.md",
+      "bytes": 1404,
+      "sha256": "d949dfbae4bd98b363bf59cfce098cf8b505a5e3a2dc83a79a70ddd0154b7da7"
+    },
+    {
+      "path": "tests/run_bounded_resource_unlock.py",
+      "bytes": 2838,
+      "sha256": "cce26175508ec919dd9fee7029b7f715a7a18b9e9ad415c9e98c8d0c16de703b"
+    },
+    {
+      "path": "tests/run_fixed_repair_fractional.py",
+      "bytes": 1658,
+      "sha256": "6936a411a5369a6744caf9229852f6f1c6056a34cb97da219e9282c2f612c694"
+    },
+    {
+      "path": "tests/run_fixed_repair_regression.py",
+      "bytes": 2315,
+      "sha256": "fe4426f255f3d26f4ca68fbb1d02a6a2d90f2906ef6b513841b7a1e94a417599"
+    },
+    {
+      "path": "tests/run_padding_comparison.py",
+      "bytes": 1854,
+      "sha256": "7ecf7d8f9e4ad3203448248e2efbd5f2fff1762459d8f1ebc45d151388cae9c5"
+    },
+    {
+      "path": "tests/run_targeted_chain_repair.py",
+      "bytes": 3526,
+      "sha256": "bbf9a6750f621f7acb456056c4ba17d813692f9171d2f2d2cd2050213598de5c"
+    },
+    {
+      "path": "tests/test_ablation_records.py",
+      "bytes": 10252,
+      "sha256": "b7d6f8dc75a1ef6a3005564b714f6a11cdea83ba564a95c755815cea572f91c6"
+    },
+    {
+      "path": "tests/test_ampere_strategies.py",
+      "bytes": 19383,
+      "sha256": "f84fe35f90d650f9d3723336b3bfcb00b59d8bc2fd71dfd1d3b20cc3ce8f9c99"
+    },
+    {
+      "path": "tests/test_benchmark.py",
+      "bytes": 7082,
+      "sha256": "14b297e5707f0f966e238b7dafd16701bdf9173705f1ed24d99f56c0fe99cd94"
+    },
+    {
+      "path": "tests/test_bounded_resource_unlock.py",
+      "bytes": 2626,
+      "sha256": "47992307c1b37af8ab22e8fb0868006f9a1637a3d35e8167fd290c8d5dccdf2b"
+    },
+    {
+      "path": "tests/test_build_run_verifier.py",
+      "bytes": 1769,
+      "sha256": "b7df475bc935310de6c0d6072c863473542a6462816c46d214392dc58ee42dc6"
+    },
+    {
+      "path": "tests/test_chain_execution.py",
+      "bytes": 7693,
+      "sha256": "95d78a36f60c7bbc3584a95e518c090627675aad6c67ebfbd72023eb5727cd46"
+    },
+    {
+      "path": "tests/test_compiler_hint_transform.py",
+      "bytes": 2504,
+      "sha256": "fc7bd455ef4d237e7335fcc34b6a093710516d2703e31f5ed2fc3b1d7ca8a7a2"
+    },
+    {
+      "path": "tests/test_concrete_code_generator.py",
+      "bytes": 17135,
+      "sha256": "2dd458a632991ca9b476f9080e547fe920ba322f9aa2e6dfc30f72235c414202"
+    },
+    {
+      "path": "tests/test_contract_guided_search.py",
+      "bytes": 3658,
+      "sha256": "4a09ca03aca5ded55bf7fa95e24e01899881bf14ec077d5be6066665431e1864"
+    },
+    {
+      "path": "tests/test_coupled_tile_regions.py",
+      "bytes": 1413,
+      "sha256": "960290aa38a6cfd10d1dbda9f30d5050d083002fc38f09957e4bf336d1753fbf"
+    },
+    {
+      "path": "tests/test_cpu_build_policy.py",
+      "bytes": 5976,
+      "sha256": "e56dd9700c5d9c0f53beda93e710f73a3a7875ad475b83b9ed944a46c5bf21e5"
+    },
+    {
+      "path": "tests/test_cpu_dependency_graph.py",
+      "bytes": 3730,
+      "sha256": "c0d52370c481bff4b8f30bb0a3383e9065ab14b1c8b7a06d54473e66504c633b"
+    },
+    {
+      "path": "tests/test_cpu_deterministic_materialization.py",
+      "bytes": 9712,
+      "sha256": "ae4d34d3f73e1cb708bd0035d6bfef13c6a0d88a98d64017381c1b063111eed1"
+    },
+    {
+      "path": "tests/test_cpu_entrypoint.py",
+      "bytes": 2206,
+      "sha256": "2051b19eb2b12631ab3f43e868b18a227aa37a7dede36e0d1a2a0054e93c723e"
+    },
+    {
+      "path": "tests/test_cpu_patch_first.py",
+      "bytes": 2113,
+      "sha256": "3dd630ad39d96041e398dad99aa2f7f669ae30b55083707c1ed1772595334d03"
+    },
+    {
+      "path": "tests/test_dynamic_shared.py",
+      "bytes": 1781,
+      "sha256": "bfc22dcb8b447863fed7f21a1e7eae11001db0221178a7ba92d313f12ed188e4"
+    },
+    {
+      "path": "tests/test_effective_implementation.py",
+      "bytes": 5851,
+      "sha256": "9881a733837489e81c16f7ea570bee54d096c8e88773b081ab9eaec6ef69309d"
+    },
+    {
+      "path": "tests/test_final_top1_tuning.py",
+      "bytes": 4550,
+      "sha256": "a2f6d92d870c46655ad69a7877046609dd7caa1846a5afe7e76461b854444f36"
+    },
+    {
+      "path": "tests/test_gemm_semantic_checker.py",
+      "bytes": 11973,
+      "sha256": "3a9af9b30f825f782ef8127962b2dbe625bfdb7e8712f0c2314efc6c96ddb35d"
+    },
+    {
+      "path": "tests/test_generated_code_repair.py",
+      "bytes": 7530,
+      "sha256": "7a95eefb2f34dd3d0d57f1ea369fac8ba4a908f6b646959beda55dfce2476002"
+    },
+    {
+      "path": "tests/test_global_context_repair.py",
+      "bytes": 2815,
+      "sha256": "090fc68a0b91315e537e132346d2464caed08684c06a4248f023f115f4501ba5"
+    },
+    {
+      "path": "tests/test_gpu_batch_unlock.py",
+      "bytes": 18325,
+      "sha256": "94c863916128ac2ec3d4de458bc31843042a05dec968d19329d258cb1619208f"
+    },
+    {
+      "path": "tests/test_implementation_context.py",
+      "bytes": 11332,
+      "sha256": "90c2455672d80bbd76cfee317002505ae1e92f320e08acbb62bc9513092cc109"
+    },
+    {
+      "path": "tests/test_initial_skeleton.py",
+      "bytes": 4814,
+      "sha256": "360121873ff1fdf24a1856f7e7fafa7b8d7940108b1387901eecf2b696237bd0"
+    },
+    {
+      "path": "tests/test_kernel_controls.py",
+      "bytes": 4612,
+      "sha256": "dfa63991e7e382a124ad85b17a4abf34b2f543e431f513b6b6fb6c2c580bb2e3"
+    },
+    {
+      "path": "tests/test_live_repair_feedback.py",
+      "bytes": 2813,
+      "sha256": "cb404f6d0ae3cb2b3a5da18464f3685b5f26d6b5d09b53548c628ae7f493abd6"
+    },
+    {
+      "path": "tests/test_load_compute_contract.py",
+      "bytes": 6718,
+      "sha256": "b17d97337bf4bece61538e953dcf1458079633b9f9dedb02765b797cfce84c9c"
+    },
+    {
+      "path": "tests/test_load_layout_trials.py",
+      "bytes": 2886,
+      "sha256": "1632f06ed2cff75d33ed36d94d464fe8d6e656d9185e1164917890aaaecddd79"
+    },
+    {
+      "path": "tests/test_locked_repair.py",
+      "bytes": 3616,
+      "sha256": "2dfa3818dda286a927ed70b02d9f32e9d91969177bf4e32d5f216af3611abb07"
+    },
+    {
+      "path": "tests/test_memory_access_plan.py",
+      "bytes": 5640,
+      "sha256": "78dc8ef9ec791ba449353e27beea0e851ecf7145f86990f236587bcf29073438"
+    },
+    {
+      "path": "tests/test_openai_client.py",
+      "bytes": 4621,
+      "sha256": "07bff7719402c165ae05fa601c1fd617aa1291e919dc07e19bec5b5fe657f4f3"
+    },
+    {
+      "path": "tests/test_padding_variants.py",
+      "bytes": 2387,
+      "sha256": "261024e88f88fd0c55ad803e1aa0f5fb28003825f13f8308c72b486b60928f65"
+    },
+    {
+      "path": "tests/test_patch_ir_types.py",
+      "bytes": 6717,
+      "sha256": "e66b2e95a74796c906e73ef29450d6869d170eacfa3bd592009269595cfade7e"
+    },
+    {
+      "path": "tests/test_patch_preservation.py",
+      "bytes": 3395,
+      "sha256": "9ef106d748dfba249481395fdc6d9d6adf32cc5b7fd943330162d187ec3d6d4b"
+    },
+    {
+      "path": "tests/test_phase1_deferred_verification.py",
+      "bytes": 1312,
+      "sha256": "fefb2f161cb09f650b9661fc61c23e33f5ef3203cc99d9b78c1df0002bbce27a"
+    },
+    {
+      "path": "tests/test_provider_config.py",
+      "bytes": 2873,
+      "sha256": "d1caae0686399fe397bb70729b1f8ed1ee406ccbf595283f6314c1ccc974264a"
+    },
+    {
+      "path": "tests/test_realization_accuracy.py",
+      "bytes": 2724,
+      "sha256": "4eb995b86d514abc5693f84e2d5bf5274c218ba260213883e8a7a853d0db9721"
+    },
+    {
+      "path": "tests/test_reference_kernel_controls.py",
+      "bytes": 3444,
+      "sha256": "aa2f6e03841a961e29cbe5fb4aee461f79235eb2dabeb3a395e7d85a6c8b5f33"
+    },
+    {
+      "path": "tests/test_remaining_chain_repairs.py",
+      "bytes": 2912,
+      "sha256": "8bd91ab6c01d83b550e5ac831cde24dce3d60841b9847f51cc217bc906e08ce6"
+    },
+    {
+      "path": "tests/test_repair_escalation.py",
+      "bytes": 4948,
+      "sha256": "d68a8d38d7879634eb53cd5c0cccd2ea6d885ac54b643807dcefb6cdc637adf3"
+    },
+    {
+      "path": "tests/test_repair_lock_lifecycle.py",
+      "bytes": 1087,
+      "sha256": "7bfe27568a1a40d3224b5fcb4c9be837324bb3deef6b1f6f9210375e90e1beba"
+    },
+    {
+      "path": "tests/test_resume_terminal_cpu.py",
+      "bytes": 876,
+      "sha256": "12b5c09b3ae9ec9b1fe391505e564f6d6a61b9bd4506fe29c58de2a46cca220c"
+    },
+    {
+      "path": "tests/test_scoped_load_transforms.py",
+      "bytes": 10732,
+      "sha256": "034d5f358252329eb6076d2950b202fd10af5a228fec0d5ed93625ff0e2e735a"
+    },
+    {
+      "path": "tests/test_search_result_integrity.py",
+      "bytes": 4478,
+      "sha256": "6612941675925b2bc73501fedcdea378abcc5464c8f001c0ee061e291c372509"
+    },
+    {
+      "path": "tests/test_server_pipeline_regression.py",
+      "bytes": 2066,
+      "sha256": "80b368fbf754bf421a247acc4e6804ca88bfdae36af0e6335bd9240b2b390789"
+    },
+    {
+      "path": "tests/test_shape_search.py",
+      "bytes": 7291,
+      "sha256": "25213bd89405ac128c6e3a35c30e68fdec24f4f9dd0b3f5f80664ec54c49a9d6"
+    },
+    {
+      "path": "tests/test_shape_specialization.py",
+      "bytes": 1483,
+      "sha256": "50b346d8e06a6b8c1af69de765a80781c5b6032e9ae72c240f32a93ba2923dce"
+    },
+    {
+      "path": "tests/test_specialization_budget.py",
+      "bytes": 1523,
+      "sha256": "adccbc305066824f812994bd5f588387dd37b54cd160fea4dbe2177400d9d6e1"
+    },
+    {
+      "path": "tests/test_stage_controller_completion.py",
+      "bytes": 46430,
+      "sha256": "f7bab8bf3589bfef92c52ad14e4e141b467bb008ef1713cde2e2c60d04ab54d0"
+    },
+    {
+      "path": "tests/test_stage_survivors.py",
+      "bytes": 4345,
+      "sha256": "6ca663deaa2f63010e9c43bdba34c61575a57f744643f4dd79c5f8dcbdbb227f"
+    },
+    {
+      "path": "tests/test_store_alignment_proof.py",
+      "bytes": 1924,
+      "sha256": "90fecc7f63661fefc45f35c3d55076b155fc36ea5d040681f691ab03ebba86fd"
+    },
+    {
+      "path": "tests/test_store_pipeline_regressions.py",
+      "bytes": 3783,
+      "sha256": "eb59d667052ed2426f0fbead069657bd83d55c01190eee68d094f54bfac93455"
+    },
+    {
+      "path": "tests/test_strategy_application.py",
+      "bytes": 2274,
+      "sha256": "afc0905f0b94c90531b65e2d9018a11456db7095ca4e23217f945291a490002e"
+    },
+    {
+      "path": "tests/test_strategy_effect_audit.py",
+      "bytes": 1530,
+      "sha256": "ad5d4e5f376b0068d874dd168c72687ee10a14ec9bb7245fbef147742b5b2f80"
+    },
+    {
+      "path": "tests/test_strategy_examples.py",
+      "bytes": 6017,
+      "sha256": "44b40f77281066a0175de44818bc938c01fa219a88d235ffd5333b9f933adb33"
+    },
+    {
+      "path": "tests/test_strategy_preserving_memory_check.py",
+      "bytes": 5017,
+      "sha256": "783c70963b4e91bce5e65782d9eddea7c34f14299ac9a6f7e03f83186aa6be8f"
+    },
+    {
+      "path": "tests/test_strategy_realization_oracle.py",
+      "bytes": 1899,
+      "sha256": "6e99705cc3f0c2024f57d8db566fee0c04437dde9c2e65ea7efb74b561f6c6e0"
+    },
+    {
+      "path": "tests/test_targeted_cuda_repair.py",
+      "bytes": 7468,
+      "sha256": "e7822cdcf07578bdb7c0994fd1233b653987476066cdea14198228826e93caaf"
+    },
+    {
+      "path": "tests/test_terminal_ranking_acceptance.py",
+      "bytes": 785,
+      "sha256": "9f995cc03482c19b2656df967a1d78715465add441bbe1387870a3dbcb349779"
+    },
+    {
+      "path": "tests/test_terminal_tuning.py",
+      "bytes": 2155,
+      "sha256": "e5dcb5bde9a3537811300627e4b8169b8494bf58270c0b513907df3520279a53"
+    },
+    {
+      "path": "tests/test_tiered_repair.py",
+      "bytes": 3302,
+      "sha256": "86387e045309199c2c56672d30df0154184d6bc86d938427665e362a5fa3b4f0"
+    },
+    {
+      "path": "tests/test_tile_enumeration.py",
+      "bytes": 1206,
+      "sha256": "d80d7c1b3987fa9cc0b68bdac5810f204608b3732b6024637b971a72975f6c9b"
+    },
+    {
+      "path": "tests/test_tile_metadata.py",
+      "bytes": 1673,
+      "sha256": "0745c675eb6babc9e74da8b99d22655b794b2f8a515ca48ab45d772ad92bf494"
+    },
+    {
+      "path": "tests/test_tile_range_planner.py",
+      "bytes": 3497,
+      "sha256": "988751efc8ff2c79e54b4aa74333594926adb29e58dc37dcd9d5abd6cd4796ab"
+    },
+    {
+      "path": "tests/test_tiling_planner.py",
+      "bytes": 23672,
+      "sha256": "c8fde7dd59272a2477538ab8d0d3f7dacf462809d891ce2336ddba141a224031"
+    },
+    {
+      "path": "tests/test_top1_shape_transfer.py",
+      "bytes": 3019,
+      "sha256": "2c666b087c2fa391e79ef2eed568d6bf6e713c2f2292c11ad1f0ce390e115209"
+    },
+    {
+      "path": "tests/test_tune.py",
+      "bytes": 6581,
+      "sha256": "a9256a14afcd710266dd3769eaca23fc1da4c0af37f9152dbed26ecd3d906edf"
+    },
+    {
+      "path": "tests/test_tune_cuda.py",
+      "bytes": 2758,
+      "sha256": "3f5b4002f3d0b074eb7e5a1fcf6959bbbf20227c963f424f7bcc4d9601979c03"
+    },
+    {
+      "path": "tests/test_tune_cuda_aggregation.py",
+      "bytes": 751,
+      "sha256": "8750386e48bfb79cdf0640ac30e0958d26778d5836a74c953e7df8aedb440754"
+    },
+    {
+      "path": "tests/test_unlock_category_selector.py",
+      "bytes": 4710,
+      "sha256": "ac46d925eddb7b05d1f3dbd09e61cf792bef521a85f47366733cf46b60bad2c7"
+    },
+    {
+      "path": "tests/test_unlock_contract_feedback.py",
+      "bytes": 6337,
+      "sha256": "08d7c481777e7129911546722d9b368bce3498dba6e6b1c82b95bc44c5c33717"
+    },
+    {
+      "path": "tests/test_unlock_realization_regressions.py",
+      "bytes": 2528,
+      "sha256": "d1763f0691c2bcf8a6796094b44c446586a42387aa1682492dd934ed9de794da"
+    },
+    {
+      "path": "tune.py",
+      "bytes": 49636,
+      "sha256": "d878c0d434561a0690c8f64e3a6cb876da85bf095f2c79fa163b2b37af068860"
+    },
+    {
+      "path": "tune_cuda.py",
+      "bytes": 15641,
+      "sha256": "d1344ad69045d0cd289c35f1c59898459366aa86f6a4d2f8ecb4bdd29906b5a1"
+    },
+    {
+      "path": "utils/__init__.py",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "utils/ablation.py",
+      "bytes": 7812,
+      "sha256": "ba90d823869637edd13f2e4ba52bccd489f695c098d092b3fe896a103840bb68"
+    },
+    {
+      "path": "utils/common_utils.py",
+      "bytes": 992,
+      "sha256": "117ac994522d321603fc1c2952c9af289f798b85aadd3e9568f5bdc57915705e"
+    },
+    {
+      "path": "utils/execution.py",
+      "bytes": 4076,
+      "sha256": "eee5b781f8c4a83000b3ca48f82d55735661b04cea4868096c232ce9459990b4"
+    },
+    {
+      "path": "utils/upgrade_ampere_strategies.py",
+      "bytes": 17437,
+      "sha256": "7a2b8c76b2fcdc970fa5cd0b680af75450a39c1ce1055f5048e5e3ebf71c9955"
+    },
+    {
+      "path": "utils/upgrade_gpu_simt_catalog.py",
+      "bytes": 31532,
+      "sha256": "cdb6a378acb2f36665cbd5c7b76535c7c2b2111273a273aaae62b3df2f8ef19f"
+    },
+    {
+      "path": "verification/__init__.py",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "path": "verification/bounded_resource_unlock.py",
+      "bytes": 13849,
+      "sha256": "7a8b1a2a94b0db2f5770df374892e0d25c5f5b550154771b13bdd45628d75a34"
+    },
+    {
+      "path": "verification/build_run_verifier.py",
+      "bytes": 31186,
+      "sha256": "ab121cf1519f7d5e0053affb5195b6b6ea1bd1738dc014b13c12fb64eb3958ad"
+    },
+    {
+      "path": "verification/c_build_run_verifier.py",
+      "bytes": 29271,
+      "sha256": "6633080ae76433c26d7bdce7ec0a1e7774bbd43ae47f54873590327b204cbe56"
+    },
+    {
+      "path": "verification/code_ast_extractor.py",
+      "bytes": 11222,
+      "sha256": "725652bf6a3d6303978c5ff1a849eec8739a87962e0babf766e029be1876071f"
+    },
+    {
+      "path": "verification/compiler_hint_transform.py",
+      "bytes": 1389,
+      "sha256": "9be801f15db9a754beb8ee8639f69b6fcfd94ffbea545901bdbcbb1e962f6a9b"
+    },
+    {
+      "path": "verification/cooperative_load_repair.py",
+      "bytes": 10135,
+      "sha256": "3a1c0006719a4daf3288cc6aab2fce84c56af0d8e111c06b09492c13aede18f9"
+    },
+    {
+      "path": "verification/cpu_skeleton_audit.py",
+      "bytes": 3031,
+      "sha256": "9045840671b04bce2a5e9163b2aaa835ab2781a2b00cf3ca047e020c7576b95d"
+    },
+    {
+      "path": "verification/cuda_build_options.py",
+      "bytes": 663,
+      "sha256": "5dfaffd771866782bda8979ee0e89ea85b0730ee7e176f3e8c349d1d8d26c2f7"
+    },
+    {
+      "path": "verification/cuda_launch_config.py",
+      "bytes": 3360,
+      "sha256": "24d8d57618eb6521dec3dfac80e0c563a708b1a30178d1704d63335feefd44b8"
+    },
+    {
+      "path": "verification/gemm_semantic_checker.py",
+      "bytes": 53142,
+      "sha256": "421fd332ffd513fb71d2e78144b42869e11e83fe24dc07660554f4e18b94e9b5"
+    },
+    {
+      "path": "verification/gemm_semantic_repair.py",
+      "bytes": 59394,
+      "sha256": "b5a257849d00a68133546a8b64526f0e56e79052acd065d7725ad06dd20dc252"
+    },
+    {
+      "path": "verification/gpu_resource_sweep.py",
+      "bytes": 3376,
+      "sha256": "ee79a69429d14f4fef16aec50bbb326af14d25cdb501c19412ba3466926536ce"
+    },
+    {
+      "path": "verification/implementation_identity.py",
+      "bytes": 2016,
+      "sha256": "22a886f19aa11b4da5d9e09249b19007f7cae88a75c63697f307df5e779f6e96"
+    },
+    {
+      "path": "verification/initial_shared_sync.py",
+      "bytes": 3702,
+      "sha256": "8c435aad4bf1135880b7af87405efd37833e7d027799260eae5676e168a6047e"
+    },
+    {
+      "path": "verification/load_layout_trials.py",
+      "bytes": 2663,
+      "sha256": "1738ee4d227ed82cafe58ab646cbd511f5fc65ea91234892d442596767c46141"
+    },
+    {
+      "path": "verification/load_transform.py",
+      "bytes": 8967,
+      "sha256": "e135cf7e3386ca4bd234a9fa9bc2940d996ce6c2ef96aaf2ef90ae7bb8cde935"
+    },
+    {
+      "path": "verification/locked_repair.py",
+      "bytes": 12636,
+      "sha256": "992944f5201c6aa2ab811b116be9d60aa1b88e0b1c86816dc56bf68700a788bb"
+    },
+    {
+      "path": "verification/memory_access_plan.py",
+      "bytes": 25968,
+      "sha256": "4f782c16e35364c3c52dd13dbab80f13a656d0bbe3fa9f45997574a63b7a1699"
+    },
+    {
+      "path": "verification/optimization_preservation.py",
+      "bytes": 3950,
+      "sha256": "a9abbc5f4b94192111d85a3e47767b547749707017d88d9f1f6092897a09a4af"
+    },
+    {
+      "path": "verification/patch_apply_verify.py",
+      "bytes": 13062,
+      "sha256": "f9535352e5490a43c120b341a3d1e47f248ec38be1e04b15a4b9b5667da63578"
+    },
+    {
+      "path": "verification/pipeline_evidence.py",
+      "bytes": 2388,
+      "sha256": "6031b583cc6d611c72bbb4101b464ad59655207be3325bc88a5066fdc7703004"
+    },
+    {
+      "path": "verification/repair_transaction.py",
+      "bytes": 1409,
+      "sha256": "f8ad7f30dc0ffedae74fa078444fa7f6810dc0bf6be2cdf4c486038bc0688602"
+    },
+    {
+      "path": "verification/resume_terminal.py",
+      "bytes": 7260,
+      "sha256": "e1b3c9783a11bb5b29e7f95b0d93c95788476529f1d9cf63dfda597dd16985ba"
+    },
+    {
+      "path": "verification/shared_storage_repair.py",
+      "bytes": 2863,
+      "sha256": "a57c7268ee79e0849c25d3b981faa25596c01c67d8aa25cb45b8c5491b49d463"
+    },
+    {
+      "path": "verification/store_alignment_proof.py",
+      "bytes": 2626,
+      "sha256": "e97dad1b562882b18ae4784b1eb2d841decf3347fed197df292d9d15ccdd2a4a"
+    },
+    {
+      "path": "verification/strategy_application.py",
+      "bytes": 3347,
+      "sha256": "8969705e7ff960e3005498bd421fbb4edd022c8378d05a540266c7b416859a0b"
+    },
+    {
+      "path": "verification/strategy_realization_oracle.py",
+      "bytes": 13745,
+      "sha256": "1c04ab32464b6c95384dc26af3471cfa52bc8f6fee8a819b5bd80a5879040e56"
+    },
+    {
+      "path": "verification/targeted_cuda_repair.py",
+      "bytes": 12251,
+      "sha256": "d67fb0e66b65d96dc01496de0bab7681bee72f538a231b8a41b7dc07aca21257"
+    },
+    {
+      "path": "verification/unlock_evidence.py",
+      "bytes": 1107,
+      "sha256": "418e5f8c3df4373a6ce2e77057896b4f1da5912d2255c6dcca2c27292bee7bb4"
+    }
+  ]
+}
