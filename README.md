@@ -50,15 +50,6 @@ python -m SCOPE.tune --backend cuda --source /path/to/generated/kernel
 Use `--build-platform windows` on Windows. See `SCOPE/docs/` for the chain,
 shape-reuse, architecture, and RQ2/RQ3 experiment descriptions.
 
-## Reproduce the compact RQ2 figure
-
-```bash
-python SCOPE/experiments/rq2_4060ti_512/figures/plot_rq2_figures.py
-```
-
-The exact input distributions, correctness thresholds, reference precision,
-cuBLAS math mode, CPU threading, and timing boundaries are documented in
-`SCOPE/experiments/rq2_4060ti_512/EXPERIMENT_PROTOCOL_AUDIT.md`.
 
 ## Credentials and data
 
