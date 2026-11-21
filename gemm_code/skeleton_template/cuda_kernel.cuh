@@ -84,7 +84,9 @@ __global__ void gemm(
     /*
      * GLOBAL_TO_SHARED_LOAD_BEGIN
      */
+    // A partial batch needs a lane check. Full batches keep a uniform trip count.
     for (int loadOffset = 0; loadOffset < BM; loadOffset += hightA) {
+        if (BM % hightA != 0 && loadOffset + load_a_smem_m >= BM) break;
         float4 tmp = FLOAT4(A[OFFSET(load_a_smem_m + loadOffset, load_a_smem_k, K) + A_offset]);
         As[0][load_a_smem_k][load_a_smem_m + loadOffset] = tmp.x;
         As[0][load_a_smem_k + 1][load_a_smem_m + loadOffset] = tmp.y;
@@ -92,6 +94,7 @@ __global__ void gemm(
         As[0][load_a_smem_k + 3][load_a_smem_m + loadOffset] = tmp.w;
     }
     for (int loadOffset = 0; loadOffset < BK; loadOffset += hightB) {
+        if (BK % hightB != 0 && loadOffset + load_b_smem_k >= BK) break;
         FLOAT4(Bs[0][load_b_smem_k + loadOffset][load_b_smem_n]) =
             FLOAT4(B[OFFSET(load_b_smem_k + loadOffset, load_b_smem_n, N) + B_offset]);
     }
@@ -148,6 +151,7 @@ __global__ void gemm(
          * NEXT_TILE_LOAD_BEGIN
          */
         for (int loadOffset = 0; loadOffset < BM; loadOffset += hightA) {
+            if (BM % hightA != 0 && loadOffset + load_a_smem_m >= BM) break;
             float4 tmp = FLOAT4(A[OFFSET(load_a_smem_m + loadOffset, load_a_smem_k + bkIdx * BK, K) + A_offset]);
             As[mem_flag][load_a_smem_k][load_a_smem_m + loadOffset] = tmp.x;
             As[mem_flag][load_a_smem_k + 1][load_a_smem_m + loadOffset] = tmp.y;
@@ -155,6 +159,7 @@ __global__ void gemm(
             As[mem_flag][load_a_smem_k + 3][load_a_smem_m + loadOffset] = tmp.w;
         }
         for (int loadOffset = 0; loadOffset < BK; loadOffset += hightB) {
+            if (BK % hightB != 0 && loadOffset + load_b_smem_k >= BK) break;
             FLOAT4(Bs[mem_flag][load_b_smem_k + loadOffset][load_b_smem_n]) =
                 FLOAT4(B[OFFSET(load_b_smem_k + loadOffset + bkIdx * BK, load_b_smem_n, N) + B_offset]);
         }

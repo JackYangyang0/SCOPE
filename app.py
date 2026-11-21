@@ -5,6 +5,7 @@ import json
 import copy
 import hashlib
 import math
+import os
 import re
 import shutil
 import sys
@@ -98,6 +99,12 @@ from SCOPE.verification.patch_apply_verify import (
 
 
 ROOT = Path(__file__).resolve().parent
+# Batch workers have private writable trees. Inputs and prompt templates stay in ROOT.
+WORK_ROOT = Path(os.environ.get("SCOPE_SHAPE_WORKSPACE", ROOT)).resolve()
+if WORK_ROOT != ROOT and (ROOT / "results" / "batches").resolve() not in WORK_ROOT.parents:
+    raise ValueError(f"Shape workspace must be inside results/batches: {WORK_ROOT}")
+RESULT_ROOT = WORK_ROOT / "results"
+GEMM_ROOT = WORK_ROOT / "gemm_code"
 DEFAULT_DESCRIPTION = (
     # "I need to generate a high-performance CUDA GEMM implementation for "
     # "row-major fp32 NN GEMM. Matrix Size: (M:4096 N:4096 K:4096)."
@@ -108,7 +115,7 @@ DEFAULT_CPU_DESCRIPTION = (
     "I need to generate a high-performance CPU C GEMM implementation for "
     "row-major fp32 NN GEMM. Matrix Size: (M:512 N:512 K:512)."
 )
-DEFAULT_IR_PATCH_DIR = ROOT / "data" / "IRs" / "ir_patch"
+DEFAULT_IR_PATCH_DIR = WORK_ROOT / "ir" if WORK_ROOT != ROOT else ROOT / "data" / "IRs" / "ir_patch"
 DEFAULT_IR_OUTPUT = DEFAULT_IR_PATCH_DIR / "optir.extracted.json"
 DEFAULT_TEMPLATE = ROOT / "data" / "IRs" / "optir.json"
 DEFAULT_STRATEGY_INDEX = ROOT / "data" / "lib" / "strategy_index.json"
@@ -117,12 +124,13 @@ DEFAULT_DEPENDENCY_GRAPH = ROOT / "data" / "graph" / "dependency_graph.json"
 DEFAULT_CPU_STRATEGY_INDEX = ROOT / "data" / "lib" / "cpu_strategy_index.json"
 DEFAULT_CPU_STRATEGY_LIBRARY = ROOT / "data" / "lib" / "cpu_strategy_library.json"
 DEFAULT_CPU_DEPENDENCY_GRAPH = ROOT / "data" / "graph" / "cpu_dependency_graph.json"
-DEFAULT_FILTERED_INDEX_OUTPUT = ROOT / "data" / "lib" / "filter" / "strategy_index.filtered.json"
-DEFAULT_CHECK_DIR = ROOT / "results" / "check"
-DEFAULT_PATCH_DIR = ROOT / "results" / "patch"
-DEFAULT_CODE_DIR = ROOT / "results" / "code"
-DEFAULT_DEFECT_DIR = ROOT / "results" / "defect"
-DEFAULT_CHAIN_DIR = ROOT / "results" / "chain"
+DEFAULT_FILTERED_INDEX_OUTPUT = (DEFAULT_IR_PATCH_DIR / "filter" if WORK_ROOT != ROOT
+                                 else ROOT / "data" / "lib" / "filter") / "strategy_index.filtered.json"
+DEFAULT_CHECK_DIR = RESULT_ROOT / "check"
+DEFAULT_PATCH_DIR = RESULT_ROOT / "patch"
+DEFAULT_CODE_DIR = RESULT_ROOT / "code"
+DEFAULT_DEFECT_DIR = RESULT_ROOT / "defect"
+DEFAULT_CHAIN_DIR = RESULT_ROOT / "chain"
 DEFAULT_SELECTED_STRATEGY_OUTPUT = DEFAULT_CHECK_DIR / "selected_strategy.json"
 DEFAULT_PRECHECK_OUTPUT = DEFAULT_CHECK_DIR / "pre_check_result.json"
 DEFAULT_PATCH_OUTPUT = DEFAULT_PATCH_DIR / "generated_patch.json"
@@ -144,10 +152,10 @@ DEFAULT_UNLOCK_BATCH_RESULT_OUTPUT = DEFAULT_CHECK_DIR / "unlock_batch_result.js
 DEFAULT_UNLOCK_BATCH_PATCH_OUTPUT = DEFAULT_PATCH_DIR / "unlock_patch.json"
 DEFAULT_UNLOCK_BATCH_DEFECT_OUTPUT = DEFAULT_DEFECT_DIR / "unlock_defect.json"
 DEFAULT_VERIFIED_IR_OUTPUT = DEFAULT_IR_PATCH_DIR / "optir.verified.json"
-DEFAULT_CODE_ROOT = ROOT / "gemm_code" / "skeleton"
-DEFAULT_CPU_CODE_ROOT = ROOT / "gemm_code" / "cpu_skeleton"
-DEFAULT_GENERATED_CODE_ROOT = ROOT / "gemm_code" / "code"
-DEFAULT_GENERATED_CPU_CODE_ROOT = ROOT / "gemm_code" / "cpu_code"
+DEFAULT_CODE_ROOT = GEMM_ROOT / "skeleton"
+DEFAULT_CPU_CODE_ROOT = GEMM_ROOT / "cpu_skeleton"
+DEFAULT_GENERATED_CODE_ROOT = GEMM_ROOT / "code"
+DEFAULT_GENERATED_CPU_CODE_ROOT = GEMM_ROOT / "cpu_code"
 DEFAULT_CODE_FILES = [
     "main.cpp",
     "cuda_kernel.cuh",
@@ -420,6 +428,18 @@ STABLE_BASELINE_DENY_IDS = {
 
 def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
+    if args.resume_batch or not (args.matrix_size or args.resume_terminal or args.reuse_family or args.shape_reuse == "only"):
+        config = load_config(args.config)
+        batch = config.get("generation") or {}
+        if args.resume_batch or batch.get("shapes") is not None:
+            from SCOPE.utils.shape_batch import run_shape_batch
+            if args.resume_batch and (args.matrix_size or args.resume_terminal or args.reuse_family or args.shape_reuse == "only"):
+                raise ValueError("--resume-batch takes its shapes from generation.shapes")
+            if (args.skip_final_tuning or not (config.get("final_top1_tuning") or {}).get("enabled", True)
+                    or not resolve_ablation_config(config, args).get("parameter_search", True)):
+                raise ValueError("A generation batch requires Phase 3. For a single-stage experiment use --matrix-size M N K.")
+            run_shape_batch(ROOT, config, args, sys.argv[1:] if argv is None else argv)
+            return
     run_pipeline(args, backend="cuda")
 
 
@@ -435,6 +455,13 @@ def run_pipeline(args: argparse.Namespace, backend: str) -> None:
     description = args.description or (
         DEFAULT_CPU_DESCRIPTION if args.backend == "cpu" else DEFAULT_DESCRIPTION
     )
+    if args.matrix_size:
+        if min(args.matrix_size) <= 0:
+            raise ValueError("--matrix-size requires positive M N K")
+        dimensions = dict(zip(("M", "N", "K"), args.matrix_size))
+        description = re.sub(r"\b([MNK])\s*[:=]\s*\d+", lambda m: f"{m[1].upper()}:{dimensions[m[1].upper()]}",
+                             description, flags=re.IGNORECASE)
+        description += "\nMatrix Size: (M:{M} N:{N} K:{K}).".format(**dimensions)
     user_question = description
 
     template = load_json(Path(args.template))
@@ -445,12 +472,6 @@ def run_pipeline(args: argparse.Namespace, backend: str) -> None:
             if args.backend == "cpu"
             else {"backend": "cuda", "language": "cuda_cpp", "device": "gpu"}
         )
-    if args.matrix_size:
-        if min(args.matrix_size) <= 0:
-            raise ValueError("--matrix-size requires positive M N K")
-        current_ir["problem"].update(zip(("M", "N", "K"), args.matrix_size))
-        description = f"{description}\nTarget matrix dimensions (override): M={args.matrix_size[0]}, N={args.matrix_size[1]}, K={args.matrix_size[2]}."
-        user_question = description
     save_json(Path(DEFAULT_IR_OUTPUT), current_ir)
 
     raw_strategy_index, strategy_library = load_strategy_documents(current_ir)
@@ -487,7 +508,7 @@ def run_pipeline(args: argparse.Namespace, backend: str) -> None:
     terminal_benchmark_warmup_runs = benchmark_warmup_runs(args, config)
     if existing_seed is not None:
         report = specialize_shapes(
-            existing_seed, strategy_library, ROOT / "gemm_code" / "shape_specialization",
+            existing_seed, strategy_library, GEMM_ROOT / "shape_specialization",
             specialization_config, build_platform, terminal_benchmark_runs,
             terminal_benchmark_warmup_runs, client=OpenAICompatibleClient(config['llm']))
         save_json(DEFAULT_CHECK_DIR / "shape_specialization.json", report)
@@ -627,11 +648,19 @@ def run_pipeline(args: argparse.Namespace, backend: str) -> None:
         )
         stage_summaries.append(stage_result["summary"])
         terminal_fallback_states.extend(stage_result.get("terminal_states", []))
-        best_partial_candidate = choose_better_partial_candidate(
-            best_partial_candidate,
-            choose_best_candidate(stage_result.get("accepted_candidates", [])),
-        )
         frontier = stage_result["frontier"]
+        if compile_each_stage:
+            for state in frontier:
+                if state.get("last_candidate") and oracle_verification_passed(state["current_ir"]):
+                    checkpoint = {**state["last_candidate"], "verified_ir": state["current_ir"],
+                                  "source_snapshot": state["source_snapshot"], "history": state["history"],
+                                  "candidate_code_dir": state["code_dir"], "path_code": state["path_code"]}
+                    if is_better_candidate(checkpoint, best_partial_candidate):
+                        best_partial_candidate = checkpoint
+        else:
+            best_partial_candidate = choose_better_partial_candidate(
+                best_partial_candidate, choose_best_candidate(stage_result.get("accepted_candidates", [])),
+            )
         stage_result["summary"]["post_stage_performance_prune"] = {
             "enabled": False,
             "reason": "Performance ranking is deferred until Phase 1 terminal verification.",
@@ -709,6 +738,7 @@ def run_pipeline(args: argparse.Namespace, backend: str) -> None:
             client=client,
             user_question=user_question,
             profile=unlocked_profile,
+            resource_config=config.get("bounded_resource_unlock") or {},
             build_platform=build_platform,
             compile_each_step=compile_each_step,
             step_compile_timeout_seconds=per_step_compile_timeout,
@@ -745,7 +775,7 @@ def run_pipeline(args: argparse.Namespace, backend: str) -> None:
         try:
             transfer_report = specialize_shapes(
                 best_overall_candidate, strategy_library,
-                ROOT / "gemm_code" / "shape_specialization",
+                GEMM_ROOT / "shape_specialization",
                 transfer_config, build_platform, terminal_benchmark_runs,
                 terminal_benchmark_warmup_runs, client=client,
             )
@@ -769,6 +799,7 @@ def run_pipeline(args: argparse.Namespace, backend: str) -> None:
             })
 
     final_top1_tuning_report = None
+    best_overall_gflops = candidate_gflops(best_overall_candidate)
     phase3_started = time.perf_counter()
     final_tuning_config = copy.deepcopy(config.get("final_top1_tuning") or {})
     final_tuning_enabled = (
@@ -777,7 +808,7 @@ def run_pipeline(args: argparse.Namespace, backend: str) -> None:
         and ablation_gate_enabled("parameter_search")
     )
     if final_tuning_enabled:
-        from SCOPE.tune import tune_top1_shapes
+        from SCOPE.tune import load_tuned_candidate, tune_top1_shapes
 
         verified_top1 = (
             best_overall_candidate
@@ -795,7 +826,7 @@ def run_pipeline(args: argparse.Namespace, backend: str) -> None:
             final_top1_tuning_report = tune_top1_shapes(
                 verified_top1,
                 strategy_library,
-                ROOT / "gemm_code" / "final_shape_tuning" / target_backend(current_ir),
+                GEMM_ROOT / "final_shape_tuning" / target_backend(current_ir),
                 final_tuning_config,
                 backend=target_backend(current_ir),
                 platform=build_platform,
@@ -811,19 +842,24 @@ def run_pipeline(args: argparse.Namespace, backend: str) -> None:
                 "error_type": type(exc).__name__,
                 "error": str(exc),
             }
+        if verified_top1:
+            try:
+                tuned_candidate = load_tuned_candidate(final_top1_tuning_report, verified_top1, current_ir["problem"])
+            except (OSError, ValueError, KeyError) as exc:
+                final_top1_tuning_report["export_error"] = str(exc)
+                print(f"Could not export Phase 3 winner; retaining verified seed: {exc}", flush=True)
+            else:
+                if tuned_candidate is not None:
+                    best_overall_candidate = tuned_candidate
+                    best_overall_gflops = tuned_candidate["performance"]["gflops"]
         save_json(DEFAULT_FINAL_TOP1_TUNING_OUTPUT, final_top1_tuning_report)
         stage_summaries.append(final_top1_tuning_report)
     phase3_elapsed_seconds = time.perf_counter() - phase3_started if final_tuning_enabled else 0.0
 
-    best_state = terminal_verification.get("best_state") or (select_best_frontier_state(frontier) if frontier else None)
     if best_overall_candidate:
         final_ir = best_overall_candidate["verified_ir"]
         final_source_snapshot = best_overall_candidate["source_snapshot"]
         final_history = best_overall_candidate.get("history")
-    elif best_state:
-        final_ir = best_state["current_ir"]
-        final_source_snapshot = best_state["source_snapshot"]
-        final_history = best_state["history"]
     elif best_partial_candidate:
         final_ir = mark_partial_frontier(
             best_partial_candidate["verified_ir"],
@@ -850,12 +886,9 @@ def run_pipeline(args: argparse.Namespace, backend: str) -> None:
     final_ir.setdefault("strategy", {})["applied_strategy_ids"] = final_history.get("applied_strategy_ids", [])
     final_ir.setdefault("strategy", {})["failed_strategy_counts"] = final_history.get("failed_strategy_counts", {})
     final_ir.setdefault("strategy", {})["history"] = final_history.get("events", [])
-    final_ir.setdefault("strategy", {})["final_selected_strategy_id"] = (
-        best_overall_candidate.get("strategy_id") if best_overall_candidate else None
-    )
-    final_ir.setdefault("strategy", {})["final_selected_code_dir"] = (
-        (best_overall_candidate or best_partial_candidate or {}).get("candidate_code_dir")
-    )
+    exported_candidate = best_overall_candidate or best_partial_candidate or {}
+    final_ir["strategy"]["final_selected_strategy_id"] = exported_candidate.get("strategy_id")
+    final_ir["strategy"]["final_selected_code_dir"] = exported_candidate.get("candidate_code_dir")
     save_json(Path(DEFAULT_VERIFIED_IR_OUTPUT), final_ir)
 
     final_code = collect_final_code_from_snapshot(final_source_snapshot, final_ir, final_history, stage_summaries)
@@ -891,9 +924,10 @@ def run_pipeline(args: argparse.Namespace, backend: str) -> None:
         "final_skeleton_dir": str(code_root),
         "best_overall_strategy_id": best_overall_candidate.get("strategy_id") if best_overall_candidate else None,
         "best_overall_code_dir": best_overall_candidate.get("candidate_code_dir") if best_overall_candidate else None,
-        "best_overall_gflops": candidate_gflops(best_overall_candidate),
+        "best_overall_gflops": best_overall_gflops,
         "best_partial_strategy_id": best_partial_candidate.get("strategy_id") if best_partial_candidate else None,
         "best_partial_code_dir": best_partial_candidate.get("candidate_code_dir") if best_partial_candidate else None,
+        "best_partial_gflops": candidate_gflops(best_partial_candidate) if compile_each_stage else None,
         "applied_strategy_ids": final_history.get("applied_strategy_ids", []),
         "failed_strategy_counts": final_history.get("failed_strategy_counts", {}),
         "stage_summaries": stage_summaries,
@@ -969,7 +1003,7 @@ def run_pipeline(args: argparse.Namespace, backend: str) -> None:
                 "final_skeleton_dir": str(code_root),
                 "best_overall_strategy_id": best_overall_candidate.get("strategy_id") if best_overall_candidate else None,
                 "best_overall_code_dir": best_overall_candidate.get("candidate_code_dir") if best_overall_candidate else None,
-                "best_overall_gflops": candidate_gflops(best_overall_candidate),
+                "best_overall_gflops": best_overall_gflops,
                 "top_3_terminal_results": summarize_terminal_results_for_console(top_terminal_results),
                 "applied_strategy_ids": final_history.get("applied_strategy_ids", []),
                 "failed_strategy_counts": final_history.get("failed_strategy_counts", {}),
@@ -988,6 +1022,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument('--resume-terminal', action='store_true',
                         help='Resume current terminal chains with real LLM repair and publish verified results; do not regenerate or clean outputs.')
     parser.add_argument("--matrix-size", nargs=3, type=int, metavar=("M", "N", "K"))
+    parser.add_argument("--resume-batch", metavar="RUN", help="Resume the named generation batch under results/batches.")
     parser.add_argument(
         "--ablation",
         choices=(
@@ -1019,7 +1054,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--skip-final-tuning",
         action="store_true",
-        help="Skip Top-1 expansion/tuning for the backend's standard target shapes.",
+        help="Skip Top-1 parameter tuning for the current GEMM shape.",
     )
     parser.add_argument("--shape-reuse", choices=("auto", "off", "only"), default="auto",
                         help="Compatibility switch: auto uses shape_specialization config; off disables it; only requires an existing seed.")
@@ -1163,7 +1198,7 @@ def generated_output_dirs(ir: dict[str, Any] | None = None) -> list[Path]:
 
 
 def safe_remove_generated_output_dir(path: Path) -> None:
-    resolved_root = ROOT.resolve()
+    resolved_root = WORK_ROOT.resolve()
     resolved = path.resolve()
     if resolved == resolved_root or resolved_root not in [resolved, *resolved.parents]:
         raise ValueError(f"Refusing to clean path outside SCOPE project: {path}")
@@ -1182,6 +1217,10 @@ def resolve_build_platform(args: argparse.Namespace, config: dict[str, Any]) -> 
 def restore_initial_cuda_skeleton(code_root: Path, ir: dict[str, Any]) -> None:
     if target_backend(ir) != "cuda":
         return
+    if WORK_ROOT != ROOT:
+        code_root.mkdir(parents=True, exist_ok=True)
+        for name in ("main.cpp", "kernel.h"):
+            shutil.copyfile(ROOT / "gemm_code" / "skeleton" / name, code_root / name)
     template = ROOT / "gemm_code" / "baseline_template" / "cuda_kernel.cuh"
     restore_source_files(code_root, {"cuda_kernel.cuh": template.read_text(encoding="utf-8")})
 
@@ -1298,7 +1337,9 @@ def attach_stage_compile_run_report(stage_report: dict[str, Any], verified_ir: d
         "enabled": True,
         "accepted": accepted,
         "compile_status": compile_status,
+        "compile_error": (verification.get("compile") or {}).get("error_message"),
         "correctness_status": correctness_status,
+        "correctness_error": (verification.get("correctness") or {}).get("error_message"),
         "runtime_safety_status": runtime_status,
         "cuda_error": (verification.get("runtime_safety") or {}).get("cuda_error"),
         "latency_ms": performance.get("latency_ms"),
@@ -1410,6 +1451,7 @@ def run_unlocked_performance_phase(
     step_compile_timeout_seconds: int,
     benchmark_runs: int,
     benchmark_warmup_runs: int,
+    resource_config: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     phase1_top = select_top_correct_candidates(
         baseline_terminal_verification.get("verified_candidates", []) or [],
@@ -1460,14 +1502,13 @@ def run_unlocked_performance_phase(
             final_frontier.append(chain_report["final_state"])
         stage_summaries.append(chain_report["summary"])
 
-    resource_config = load_config(Path(DEFAULT_CONFIG)).get("bounded_resource_unlock", {}) or {}
-    if resource_config.get("enabled", False):
+    if resource_config and resource_config.get("enabled", False):
         from SCOPE.verification.bounded_resource_unlock import run_bounded_unlock
         import uuid
         resource_seeds = select_top_correct_candidates(
             [*phase1_top, *unlocked_candidates], DEFAULT_TOP_K_FINAL_RESULTS)
         resource_candidates = run_bounded_unlock(
-            resource_seeds, ROOT / "results" / "code" / ("resource_unlock_" + uuid.uuid4().hex[:12]),
+            resource_seeds, DEFAULT_CODE_DIR / ("resource_unlock_" + uuid.uuid4().hex[:12]),
             build_platform, benchmark_runs, benchmark_warmup_runs,
             load_layout_trials=resource_config.get("load_layout_trials", True))
         unlocked_candidates.extend(resource_candidates)
@@ -3085,6 +3126,8 @@ def load_strategy_documents(ir: dict[str, Any] | None = None) -> tuple[dict[str,
     return load_merged_strategy_documents(
         current_index_path=Path(DEFAULT_STRATEGY_INDEX),
         current_library_path=Path(DEFAULT_STRATEGY_LIBRARY),
+        **({"merged_index_output": DEFAULT_IR_PATCH_DIR / "strategy_index.merged.json",
+            "merged_library_output": DEFAULT_IR_PATCH_DIR / "strategy_library.merged.json"} if WORK_ROOT != ROOT else {}),
     )
 
 
@@ -3287,7 +3330,6 @@ def run_stage(
     tiling_llm_top_n: int = DEFAULT_TILING_LLM_TOP_N,
     lazy_fallback_execution: bool = DEFAULT_LAZY_FALLBACK_EXECUTION,
 ) -> dict[str, Any]:
-    compile_each_step = False
     stage_snapshot = base_source_snapshot or snapshot_source_files(backend_code_root(current_ir), backend_code_files(current_ir))
     controller = StageController(
         strategy_index=raw_strategy_index,
@@ -3300,6 +3342,7 @@ def run_stage(
     current_subphase_id = controller.current_subphase_id()
     if current_subphase_id and current_subphase_id.endswith(".StageVerification"):
         stage_report = controller.verify_stage(current_ir, include_code_checks=False)
+        stage_report["accepted_by_ir_checker"] = stage_report["accepted"]
         stage_report["verification_scope"] = "stage_ir_predicates_only"
         verified_stage_ir = current_ir
         verified_stage_snapshot = stage_snapshot
@@ -3316,11 +3359,13 @@ def run_stage(
                 benchmark_warmup_runs=stage_benchmark_warmup_runs,
             )
             stage_report = attach_stage_compile_run_report(stage_report, verified_stage_ir)
+            stage_report["verification_scope"] = "stage_ir_predicates_and_compile_run"
             stage_report["runtime_verification"] = "completed_at_stage_boundary"
-            stage_report["stage_compile_run"]["gate"] = "advisory_until_phase1_completion"
-            stage_report["accepted"] = True
-        else:
+            stage_report["stage_compile_run"]["gate"] = "required_at_stage_boundary"
+        elif stage_report["accepted"]:
             stage_report["runtime_verification"] = "deferred_until_phase1_completion"
+        else:
+            stage_report["runtime_verification"] = "skipped_after_ir_rejection"
         save_json(stage_path(DEFAULT_PRECHECK_OUTPUT, current_subphase_id), stage_report)
         save_json(stage_path(DEFAULT_POSTCHECK_OUTPUT, current_subphase_id), stage_level_post_check(stage, current_subphase_id, stage_report))
         return {
@@ -3609,7 +3654,7 @@ def run_stage(
             build_platform=build_platform,
             semantic_precheck_terminal=False,
             defer_semantic_checks=True,
-            compile_each_step=False,
+            compile_each_step=compile_each_step,
             step_compile_timeout_seconds=step_compile_timeout_seconds,
         )
         candidate_results.append(candidate_result)
@@ -3693,6 +3738,38 @@ def run_stage(
     }
 
 
+def rollback_stage_input(stage, state, raw_strategy_index, strategy_library):
+    """Return a verified stage input eligible for a fresh boundary check."""
+    if not oracle_verification_passed(state["current_ir"]):
+        return None
+    ir = copy.deepcopy(state["current_ir"])
+    history = copy_history(state["history"])
+    skipped = []
+    while True:
+        controller = StageController(raw_strategy_index, strategy_library, stage, ir, history)
+        subphase = controller.current_subphase()
+        name = controller.current_subphase_id()
+        if name and name.endswith(".StageVerification"):
+            break
+        if name in skipped or not subphase_can_continue_after_candidate_failures(subphase):
+            return None
+        ir = controller.skip_current_subphase("stage alternatives exhausted after device verification")
+        merge_strategy_progress_from_ir(history, ir)
+        skipped.append(name)
+    if not skipped:
+        return None
+    history["events"].append({"stage": stage, "status": "rollback_to_verified_input",
+                              "skipped_subphases": skipped, "input_state_id": state["state_id"]})
+    # Zero reserves a separate directory from the discarded children (ranked from one).
+    code = [*state["path_code"], 0]
+    ir.setdefault("strategy", {})["chain_code"] = chain_code_key(code)
+    return make_frontier_state(
+        f"{state['state_id']}->rollback_{stage}", ir, state["source_snapshot"], history,
+        state["path"], code, last_candidate=state.get("last_candidate"),
+        code_dir=str(chain_code_path(state["path"], code, ir)),
+    )
+
+
 def run_exhaustive_stage(
     stage: str,
     frontier: list[dict[str, Any]],
@@ -3728,6 +3805,8 @@ def run_exhaustive_stage(
     seen_paths = {tuple(state.get("path", [])) for state in frontier}
     output_paths: set[tuple[str, ...]] = set()
     round_index = 0
+    rejected_stage_paths = set()
+    rollback_attempted = False
 
     while active_frontier or (
         pending_frontier and (exhaust_pending or max_frontier_states <= 0 or len(next_frontier) < max_frontier_states)
@@ -3876,6 +3955,9 @@ def run_exhaustive_stage(
                 continue
 
             if not stage_result.get("accepted_candidates"):
+                gate = stage_result["summary"].get("stage_verification", {}).get("stage_compile_run", {})
+                if gate.get("accepted") is False:
+                    rejected_stage_paths.add(tuple(state["path_code"]))
                 terminal_state = copy.deepcopy(state)
                 terminal_state["terminal_reason"] = "all_children_failed_or_stage_gate_failed"
                 terminal_states.append(terminal_state)
@@ -3956,6 +4038,17 @@ def run_exhaustive_stage(
         else:
             active_frontier = new_active
 
+        if not (active_frontier or pending_frontier or next_frontier or rollback_attempted) and rejected_stage_paths:
+            rollback_attempted = True
+            for parent in frontier:
+                prefix = tuple(parent["path_code"])
+                if not any(p[:len(prefix)] == prefix and len(p) > len(prefix) for p in rejected_stage_paths):
+                    continue
+                restored = rollback_stage_input(stage, parent, raw_strategy_index, strategy_library)
+                if restored:
+                    total_events.append(restored["history"]["events"][-1])
+                    active_frontier.append(restored)
+
     carry_reason = (
         "single-path mode carries only one selected chain state"
         if DEFAULT_SINGLE_PATH_MODE
@@ -3974,6 +4067,9 @@ def run_exhaustive_stage(
     else:
         next_frontier, stage_pruned = select_stage_survivors(next_frontier, max_frontier_states)
 
+    measured_states = [state for state in next_frontier if oracle_verification_passed(state["current_ir"])]
+    best_stage_state = max(measured_states, key=lambda state: candidate_gflops({"verified_ir": state["current_ir"]}) or 0,
+                           default=None)
     return {
         "frontier": next_frontier,
         "terminal_states": terminal_states,
@@ -3993,10 +4089,8 @@ def run_exhaustive_stage(
             ],
             "stage_selection_basis": "best_quality_then_distinct_blocks_then_mmr",
             "accepted_candidate_count": len(accepted_candidates),
-            "best_stage_strategy_id": choose_best_candidate(accepted_candidates)["strategy_id"]
-            if accepted_candidates
-            else None,
-            "best_stage_gflops": candidate_gflops(choose_best_candidate(accepted_candidates)),
+            "best_stage_strategy_id": best_stage_state["path"][-1] if best_stage_state and best_stage_state["path"] else None,
+            "best_stage_gflops": candidate_gflops({"verified_ir": best_stage_state["current_ir"]}) if best_stage_state else None,
             "max_frontier_states": max_frontier_states or None,
             "exhaust_pending": exhaust_pending,
             "pending_frontier_count": len(pending_frontier),
@@ -4075,7 +4169,6 @@ def run_deterministic_strategy_candidate(
     compile_each_step: bool = DEFAULT_COMPILE_EACH_STRATEGY_STEP,
     step_compile_timeout_seconds: int = DEFAULT_STEP_COMPILE_TIMEOUT_SECONDS,
 ) -> dict[str, Any]:
-    compile_each_step = False
     strategy_id = strategy["strategy_id"]
     attempt = 1
     candidate_code_dir = chain_code_path(chain_path or [strategy_id], chain_code, base_ir)
@@ -4746,12 +4839,12 @@ def index_mapping_lines(ir: dict[str, Any]) -> list[str]:
         "const int global_n_base = tile_n0 + local_n_base;",
         "const int global_m = global_m_base;",
         "const int global_n = global_n_base;",
-        "const int load_a_smem_m = tid % BM;",
-        "const int load_a_smem_k = (tid / BM) % BK;",
-        "const int load_b_smem_n = tid % BN;",
-        "const int load_b_smem_k = (tid / BN) % BK;",
-        "const int hightA = CEIL_DIV(BM * BK, thread_num);",
-        "const int hightB = CEIL_DIV(BN * BK, thread_num);",
+        "const int load_a_smem_m = tid / (BK / 4);",
+        "const int load_a_smem_k = (tid % (BK / 4)) * 4;",
+        "const int load_b_smem_k = tid / (BN / 4);",
+        "const int load_b_smem_n = (tid % (BN / 4)) * 4;",
+        "const int hightA = thread_num / (BK / 4);",
+        "const int hightB = thread_num / (BN / 4);",
         "(void)global_m_base;",
         "(void)global_n_base;",
         "(void)load_a_smem_m;",
@@ -5223,6 +5316,11 @@ def run_strategy_candidate(
             }
 
         repair_context = build_repair_context(attempt, patch_result, post_check_result, verified_ir, diagnosis)
+        if verified_ir.get("chain_step", {}).get("phase") == "step_compile_gate" and generated_code.get("edits"):
+            # Retries start from the parent source. Show the rejected edit that produced the compiler diagnostics.
+            repair_context["rejected_cuda_edits"] = [
+                {"region": edit["region"], "replacement": edit["replacement"]} for edit in generated_code["edits"]
+            ]
 
     return {
         "accepted": False,
@@ -5962,12 +6060,12 @@ def stage_level_post_check(stage: str, subphase: str, stage_report: dict[str, An
         "phase": "stage_completion_post_check",
         "stage": stage,
         "subphase": subphase,
-        "accepted_by_ir_checker": bool(stage_report.get("accepted")),
+        "accepted_by_ir_checker": stage_report["accepted_by_ir_checker"],
         "postconditions_ok": bool(stage_report.get("accepted")),
         "hard_constraints_checked": False,
         "hard_constraints_ok": None,
         "deferred_until_stage_verification": False,
-        "results": stage_report.get("512-cuda-result/results", []),
+        "results": stage_report.get("results", []),
         "stage_verification": stage_report,
     }
 
@@ -6180,7 +6278,11 @@ def candidate_is_accepted(verified_ir: dict[str, Any]) -> bool:
 
 
 def oracle_verification_passed(verified_ir: dict[str, Any]) -> bool:
-    return verified_ir.get("verification", {}).get("accepted") is True
+    verification = verified_ir.get("verification") or {}
+    return verification.get("accepted") is True and all(
+        (verification.get(gate) or {}).get("status") == "pass"
+        for gate in ("compile", "correctness", "runtime_safety")
+    )
 
 
 def stage_failure_requires_strategy_fallback(verified_ir: dict[str, Any]) -> bool:
@@ -6207,6 +6309,7 @@ def stage_failure_requires_strategy_fallback(verified_ir: dict[str, Any]) -> boo
 
 def mark_chain_step_generated(ir: dict[str, Any], code_apply_result: dict[str, Any]) -> dict[str, Any]:
     next_ir = copy.deepcopy(ir)
+    next_ir["performance"] = {}
     next_ir["chain_step"] = {
         "status": "generated",
         "verification_deferred": True,
@@ -6349,7 +6452,7 @@ def candidate_event(
     verified_ir: dict[str, Any] | None,
     attempts: list[dict[str, Any]],
 ) -> dict[str, Any]:
-    performance = (verified_ir or {}).get("performance", {}) or {}
+    performance = verified_ir.get("performance", {}) if oracle_verification_passed(verified_ir or {}) else {}
     return {
         "stage": stage,
         "strategy_id": strategy_id,
@@ -7194,8 +7297,6 @@ def apply_experiment_budget(config: dict[str, Any], budget: str) -> None:
         "benchmark_warmup_runs": 1,
     })
     config.setdefault("final_top1_tuning", {}).update({
-        "gpu_shapes": [1024],
-        "cpu_shapes": [1024],
         "max_candidates_per_shape": 6,
         "rounds": 2,
         "screening_benchmark_runs": 1,
@@ -7215,7 +7316,7 @@ def save_experiment_records(rq2_record: dict[str, Any], rq3_record: dict[str, An
     safe_variant = re.sub(
         r"[^A-Za-z0-9_.-]+", "_", str(rq2_record.get("variant") or "full")
     ).strip("._") or "full"
-    archive = ROOT / "results" / "experiments" / "runs" / safe_run_id / safe_variant
+    archive = RESULT_ROOT / "experiments" / "runs" / safe_run_id / safe_variant
     save_json(archive / "rq2_ablation_record.json", rq2_record)
     save_json(archive / "rq3_optimization_record.json", rq3_record)
 
@@ -8079,7 +8180,7 @@ def mark_partial_frontier(
     verification["accepted"] = False
     verification.setdefault("summary", {})["search_status"] = "partial_chain_selected"
     verification.setdefault("summary", {})["reason"] = (
-        "No terminal strategy chain was produced; restored the deepest generated partial chain instead of the empty skeleton."
+        "No terminal strategy chain was produced. This snapshot is a partial search result."
     )
     final_ir.setdefault("strategy", {})["search_status"] = "partial_chain_selected"
     final_ir.setdefault("strategy", {})["stage_summaries"] = stage_summaries
@@ -8256,9 +8357,6 @@ def build_phase1_compile_shortlist(
     top_k: int,
 ) -> list[dict[str, Any]]:
     """Keep one global compile budget, preferring fully constructed unique paths."""
-    if top_k <= 0:
-        return [*completed_states, *fallback_states]
-    unique: dict[tuple[str, ...], dict[str, Any]] = {}
     # A state rejected before all construction stages finish is useful for
     # diagnostics, but it is not a terminal implementation.  Benchmarking it
     # would rank a partial kernel as if it represented the selected strategy
@@ -8269,6 +8367,9 @@ def build_phase1_compile_shortlist(
             "all_children_failed_or_stage_gate_failed",
         }
     ]
+    if top_k <= 0:
+        return [*completed_states, *eligible_fallbacks]
+    unique: dict[tuple[str, ...], dict[str, Any]] = {}
     for state in [*completed_states, *eligible_fallbacks]:
         path_key = tuple(state.get("path", []) or [])
         if not path_key:

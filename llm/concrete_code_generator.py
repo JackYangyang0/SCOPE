@@ -467,11 +467,13 @@ def apply_concrete_code(
 
 def normalize_edit_replacement(item: dict[str, Any]) -> str | None:
     replacement = item.get("replacement")
-    if isinstance(replacement, str):
+    if isinstance(replacement, str) and replacement.strip():
         return replacement
-    replacement_lines = item.get("replacement_lines")
-    if isinstance(replacement_lines, list) and all(isinstance(line, str) for line in replacement_lines):
-        return "\n".join(replacement_lines)
+    for lines in (item.get("replacement_lines"), replacement):
+        if isinstance(lines, list) and all(isinstance(line, str) for line in lines):
+            body = "\n".join(lines)
+            if body.strip():
+                return body
     return None
 
 

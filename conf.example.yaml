@@ -2,11 +2,11 @@ bounded_resource_unlock:
   load_layout_trials: true
   enabled: true
 llm:
-  provider: cmecloud
+  provider: qwen
   qwen:
     api_key_env: QWEN_API_KEY
-    model: deepseek-v4-pro
-    base_url: https://api.deepseek.com
+    model: qwen-flash
+    base_url: https://maas.qianwenaiapi.com/compatible-mode/v1
     api_key: ''
     selection_max_tokens: 2048
     codegen_max_tokens: 4096
@@ -79,6 +79,10 @@ llm:
     selection_max_retries: 3
     codegen_timeout_seconds: 300
     max_retries: 5
+generation:
+  # Each CUDA target gets an independent Phase 1-3 run. Order is [M, N, K].
+  alias: gemm
+  shapes: [[512, 512, 512], [1024, 1024, 1024], [2048, 2048, 2048]]
 execution:
   chain_workers: 3
   llm_max_concurrency: 3
@@ -157,16 +161,7 @@ shape_specialization:
   - ab
 final_top1_tuning:
   enabled: true
-  gpu_shapes:
-  - 512
-  - 1024
-  - 2048
-  - 4096
-  cpu_shapes:
-  - 256
-  - 512
-  - 768
-  - 1024
+  # Phase 3 searches tile combinations for the current problem's M, N and K.
   max_candidates_per_shape: 1710
   rounds: 3
   timeout_seconds: 180

@@ -27,6 +27,7 @@ Hard rules:
 Semantic repair constraints:
 - For EACH A/B tile and EACH pipeline load phase, enumerate vector groups with vector_index=tid; vector_index<tile_elements/vector_width; vector_index+=threads_per_block (or prove equivalent coverage). Do not assume one vector per thread suffices. For row-major A, vector components advance K; for B, they advance N. Shared padding can invalidate float4 shared-store alignment even when global loads are aligned; scalar component scatter is permitted while preserving vector global loads.
 - Inspect declarations outside anchors. Existing symbols must be reused or deliberately rewritten, never blindly duplicated. Treat suggested regions as hints, not as the entire code context.
+- When editing load mapping, retain every output-coordinate declaration still used by compute, final-tile compute and store (for example Wrow, Wcol, Trow and Tcol). Use the K origin in scope at each load: the prologue starts at zero, the next tile uses its loop index times BK. Apply the block origin once in global addresses and use tile-local coordinates in shared memory.
 - For TM/TN thread tiles, map output groups to 2D tile coordinates. Do not use `base_element = group * TM * TN` for C coverage.
 - Cooperative shared A/B loads and `__syncthreads()` must not be nested under a per-output group loop.
 - For warp/lane fragment mapping, require `(WMITER / TM) * (WNITER / TN) == 32`, `WM % WMITER == 0`, and `WN % WNITER == 0`.

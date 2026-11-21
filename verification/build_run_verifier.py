@@ -94,7 +94,7 @@ def run_async_safety_checks(exe_path, ir, timeout_seconds):
     if not sanitizer:
         return {"status": "not_run", "reason": "compute-sanitizer not available", "checks": []}
     problem = ir.get("problem", {})
-    args = [str(problem.get(key, 512)) for key in ("M", "N", "K")]
+    args = [str(problem.get(key, 512)) for key in ("M", "K", "N")]
     checks = []
     for name in ("racecheck", "synccheck"):
         command = [sanitizer, "--tool", name, "--error-exitcode", "86", str(exe_path), *args]
@@ -547,6 +547,10 @@ def update_compile_result(ir, compile_result):
 
 def mark_unrun(ir, reason):
     verification = ir.setdefault("verification", {})
+    verification["accepted"] = False
+    verification["accept_reason"] = None
+    for key in ("run_stdout", "run_stderr", "benchmark", "async_sanitizer"):
+        verification.pop(key, None)
     correctness = verification.setdefault("correctness", {})
     runtime_safety = verification.setdefault("runtime_safety", {})
     correctness["status"] = "not_run"
@@ -640,6 +644,8 @@ def update_run_result(ir, run_result):
     ]:
         if key in metrics:
             performance[key] = metrics[key]
+        else:
+            performance.pop(key, None)
 
     verification["accepted"] = (
         verification.get("compile", {}).get("status") == "pass"

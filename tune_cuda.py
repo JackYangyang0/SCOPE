@@ -6,6 +6,8 @@ import copy
 import hashlib
 import json
 import time
+from collections import defaultdict, deque
+from itertools import zip_longest
 from pathlib import Path
 from uuid import uuid4
 
@@ -39,6 +41,15 @@ def clear_results(ir):
     # Never turn a parameter sweep into the compiler's separate resource sweep.
     result.setdefault("compiler", {}).pop("resource_feedback", None)
     return result
+
+
+def interleave_block_tiles(tiles):
+    """Give each block shape a turn before taking its next warp/thread layout."""
+    groups = defaultdict(list)
+    for tile in tiles:
+        groups[tile["BM"], tile["BN"], tile["BK"]].append(tile)
+    return [tile for group_round in zip_longest(*groups.values())
+            for tile in group_round if tile is not None]
 
 
 def tune_sources(sources, kernel, ir, library, output, *, max_candidates=0, rounds=3,
@@ -123,16 +134,21 @@ def tune_sources(sources, kernel, ir, library, output, *, max_candidates=0, roun
         return True
 
     evaluate(sources[kernel],None,0)
-    all_tiles = list(enumerate_tiles(library, ir)) if candidate_tiles is None else list(candidate_tiles)
+    all_tiles = (interleave_block_tiles(enumerate_tiles(library, ir))
+                 if candidate_tiles is None else list(candidate_tiles))
     report['enumeration_scope'] = ('strategy_library_domains_all_legal_iteration_layouts'
                                    if candidate_tiles is None else 'llm_coupled_ranges_all_legal_iteration_layouts')
     report['legal_candidate_count'] = len(all_tiles)
-    report['candidate_order'] = 'Block -> Warp -> Thread -> WMITER/WNITER'
-    pool = all_tiles if max_candidates == 0 else all_tiles[:max_candidates]
-    report['budget_omitted_count'] = len(all_tiles) - len(pool)
+    report['candidate_order'] = ('round-robin block shapes' if candidate_tiles is None
+                                 else 'supplied tile order') + '; one pass per padding mode'
+    tile_pool = all_tiles if max_candidates == 0 else all_tiles[:max_candidates]
+    report['budget_omitted_count'] = len(all_tiles) - len(tile_pool)
     write_json(output / 'candidate_manifest.json', all_tiles)
-    tile_pool = pool
-    pool = [(tile, mode) for tile in tile_pool for mode in padding_modes]
+    padding_modes = list(dict.fromkeys(padding_modes))
+    if 'original' in padding_modes:
+        padding_modes.remove('original')
+        padding_modes.insert(0, 'original')
+    pool = [(tile, mode) for mode in padding_modes for tile in tile_pool]
     report['padding_modes'] = list(padding_modes)
     report['expanded_variant_count'] = len(pool)
     write_json(output / 'variant_manifest.json', [{'tile': t, 'padding_mode': m} for t, m in pool])
@@ -142,7 +158,7 @@ def tune_sources(sources, kernel, ir, library, output, *, max_candidates=0, roun
         report["stop_reason"] = "unsupported_source_parameters: require unique numeric BM/BN/BK/WM/WN/TM/TN/WMITER/WNITER in LAUNCH_CONFIG"
     else:
         per_round = max(1, (max_candidates+rounds-1)//rounds)
-        pending = list(pool)
+        pending = deque(pool)
         for round_number in range(1,rounds+1):
             before = len(report["results"])
             attempted = 0
@@ -150,7 +166,7 @@ def tune_sources(sources, kernel, ir, library, output, *, max_candidates=0, roun
                 if max_variant_compilations is not None and len(report['results']) - 1 >= max_variant_compilations:
                     report['stop_reason'] = 'compilation_budget_exhausted'
                     break
-                tile, mode = pending.pop(0)
+                tile, mode = pending.popleft()
                 attempted += 1
                 content = specialize_seed(family,tile)
                 if content is not None:
@@ -162,7 +178,10 @@ def tune_sources(sources, kernel, ir, library, output, *, max_candidates=0, roun
             report["rounds"].append({"round":round_number,"tested":len(report["results"])-before})
             if report.get('stop_reason') == 'compilation_budget_exhausted':
                 break
-            if target_ratio is not None and any((r["relative_to_cublas"] or 0)>=target_ratio for r in report["results"]):
+            first_pass_complete = len(pool) - len(pending) >= len(tile_pool)
+            if first_pass_complete and target_ratio is not None and any(
+                (r["relative_to_cublas"] or 0) >= target_ratio for r in report["results"]
+            ):
                 report.update(target_reached=True,stop_reason="target_reached")
                 break
             if not pending:

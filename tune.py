@@ -24,6 +24,7 @@ from SCOPE.tune_cuda import aggregate_value, clear_results
 from SCOPE.tune_cuda import tune_sources as tune_cuda_sources
 from SCOPE.utils.common_utils import load_config
 from SCOPE.verification.c_build_run_verifier import run_cpu_optimized_baseline, verify_cpu_build_and_run
+from SCOPE.verification.cuda_build_options import cuda_optimization_flags
 
 ROOT = Path(__file__).resolve().parent
 CPU_TILE_KEYS = ("L2_M", "L2_N", "L2_K", "L1_M", "L1_N", "L1_K", "MR", "NR")
@@ -494,6 +495,20 @@ def tune_sources(*args: Any, backend: str = "cuda", **kwargs: Any) -> dict[str, 
     return tune_cuda_sources(*args, **kwargs)
 
 
+def bundle_shape_label(shape: dict[str, int]) -> str:
+    m, n, k = (shape[axis] for axis in ("M", "N", "K"))
+    return str(m) if m == n == k else f"{m}x{n}x{k}"
+
+
+def _bundle_run_targets(shape_items: list[dict[str, Any]]) -> dict[str, str]:
+    targets = {}
+    for item in shape_items:
+        m, n, k = (item["shape"][axis] for axis in ("M", "N", "K"))
+        label = bundle_shape_label(item["shape"])
+        targets[f"run-{label}"] = f"{m} {k} {n}"  # Both benchmark drivers take M K N.
+    return targets
+
+
 def _publish_gpu_shape_bundle(
     output: Path,
     sources: dict[str, str],
@@ -501,136 +516,65 @@ def _publish_gpu_shape_bundle(
 ) -> Path:
     result_dir = output / "results"
     result_dir.mkdir(parents=True, exist_ok=False)
-    sizes = [int(item["shape"]["M"]) for item in shape_items]
-    kernel_text_by_size: dict[int, str] = {}
-    for item, size in zip(shape_items, sizes):
-        kernel_text = (Path(item["final_code_dir"]) / "cuda_kernel.cuh").read_text(encoding="utf-8")
-        kernel_text_by_size[size] = kernel_text
-        (result_dir / f"cuda_kernel_{size}.cuh").write_text(kernel_text, encoding="utf-8")
-    (result_dir / "main.cpp").write_text(sources["main.cpp"], encoding="utf-8")
-    # A single-candidate header may include cuda_kernel.cuh directly. The
-    # integrated bundle owns all numbered kernel includes in kernel_dispatch.cu.
-    kernel_header = re.sub(
-        r'^\s*#\s*include\s*[<"]cuda_kernel\.cuh[>"]\s*\r?\n?',
-        "",
-        sources["kernel.h"],
-        flags=re.MULTILINE,
-    )
-    (result_dir / "kernel.h").write_text(kernel_header, encoding="utf-8")
-
-    declarations = ["#pragma once", ""]
-    for size in sizes:
-        declarations.extend([
-            f"void cuda_gemm_{size}(",
-            "    int M, int N, int K, float alpha, float *A, float *B, float beta, float *C);",
+    template = ROOT / "gemm_code" / "bundle_template"
+    signature = "int M, int N, int K, float alpha, float *A, float *B, float beta, float *C"
+    arguments = "M, N, K, alpha, A, B, beta, C"
+    declarations = ["#pragma once"]
+    dispatch = ['#include "kernel_variants.h"', "#include <cstdio>", "#include <cstdlib>", ""]
+    conditions = []
+    objects = []
+    rules = []
+    for index, item in enumerate(shape_items):
+        m, n, k = (item["shape"][axis] for axis in ("M", "N", "K"))
+        label = bundle_shape_label(item["shape"])
+        directory = Path(item["final_code_dir"])
+        header = f"cuda_kernel_{label}.cuh"
+        shutil.copyfile(directory / "cuda_kernel.cuh", result_dir / header)
+        entry = f"cuda_gemm_{label}"
+        declarations.append(f"void {entry}({signature});")
+        # Separate translation units keep macro definitions and compiler settings
+        # private. Put generated C++ helpers in a variant-specific namespace.
+        dispatch.append(("#if" if index == 0 else "#elif") + f" defined(SCOPE_VARIANT_{label})")
+        kernel = (result_dir / header).read_text(encoding="utf-8-sig")
+        if item.get("source_hash") and hashlib.sha256(kernel.encode()).hexdigest() != item["source_hash"]:
+            raise ValueError(f"Kernel changed since measurement: {directory}")
+        includes = re.findall(r'^\s*#\s*include\s+([<"][^>"\n]+[>"])', kernel, re.MULTILINE)
+        dispatch.extend(f"#include {name}" for name in dict.fromkeys(includes))
+        dispatch.extend([
+            f"namespace scope_{label} {{",
+            f"#define cuda_gemm scope_entry_{label}",
+            f'#include "{header}"',
+            "#undef cuda_gemm",
+            "}",
+            f"void {entry}({signature}) {{ scope_{label}::scope_entry_{label}({arguments}); }}",
         ])
-    (result_dir / "kernel_variants.h").write_text("\n".join(declarations) + "\n", encoding="utf-8")
-
-    function_pattern = re.compile(
-        r'(?m)^\s*(?:extern\s+"C"\s+)?'
-        r'(?:(?:__global__|__device__|__host__|__forceinline__|inline|static)\s+)*'
-        r'(?:void|int|float|double|bool|cudaError_t|dim3)\s+'
-        r'([A-Za-z_]\w*)\s*\('
-    )
-    names_by_size = {
-        size: set(function_pattern.findall(kernel_text))
-        for size, kernel_text in kernel_text_by_size.items()
-    }
-    duplicate_helpers = sorted(
-        name for name in set().union(*names_by_size.values())
-        if name not in {"gemm", "cuda_gemm"}
-        and sum(name in names for names in names_by_size.values()) > 1
-    )
-
-    dispatch = ['#include "kernel.h"', '#include "kernel_variants.h"', ""]
-    for size in sizes:
-        renamed = [("gemm", f"scope_gemm_{size}"), ("cuda_gemm", f"cuda_gemm_{size}")]
-        renamed.extend(
-            (name, f"{name}_{size}")
-            for name in duplicate_helpers
-            if name in names_by_size[size]
-        )
-        dispatch.extend(f"#define {name} {replacement}" for name, replacement in renamed)
-        dispatch.append(f'#include "cuda_kernel_{size}.cuh"')
-        dispatch.extend(f"#undef {name}" for name, _ in reversed(renamed))
-        dispatch.append("")
+        conditions.append(f"    if (M == {m} && N == {n} && K == {k}) return {entry}({arguments});")
+        obj = f"$(BUILD_DIR)/variant_{label}.$(OBJEXT)"
+        objects.append(obj)
+        ir = json.loads((directory / "verified_ir.json").read_text(encoding="utf-8"))
+        flags = " ".join(cuda_optimization_flags(ir))
+        rules.extend([
+            f"{obj}: kernel_dispatch.cu {header} kernel_variants.h | $(BUILD_DIR)",
+            f"\t$(CUDA) $(NVCCFLAGS) {flags} -DSCOPE_VARIANT_{label} -c $< -o $@",
+        ])
     dispatch.extend([
-        "static int maximum_dimension(int M, int N, int K) {",
-        "    int value = M > N ? M : N;",
-        "    return value > K ? value : K;",
-        "}",
-        "",
-        "void cuda_gemm(",
-        "    int M, int N, int K, float alpha, float *A, float *B, float beta, float *C) {",
-        "    const int extent = maximum_dimension(M, N, K);",
+        "#else", '#include "kernel.h"', f"void cuda_gemm({signature}) {{", *conditions,
+        '    std::fprintf(stderr, "Unsupported GEMM shape M=%d N=%d K=%d\\n", M, N, K);',
+        "    std::exit(EXIT_FAILURE);", "}", "#endif",
     ])
-    for index, size in enumerate(sizes):
-        keyword = "if" if index == 0 else "else if"
-        if index < len(sizes) - 1:
-            dispatch.extend([
-                f"    {keyword} (extent <= {size}) {{",
-                f"        cuda_gemm_{size}(M, N, K, alpha, A, B, beta, C);",
-                "    }",
-            ])
-        else:
-            if index == 0:
-                dispatch.append(f"    cuda_gemm_{size}(M, N, K, alpha, A, B, beta, C);")
-            else:
-                dispatch.extend([
-                    "    else {",
-                    f"        cuda_gemm_{size}(M, N, K, alpha, A, B, beta, C);",
-                    "    }",
-                ])
-    dispatch.append("}")
     (result_dir / "kernel_dispatch.cu").write_text("\n".join(dispatch) + "\n", encoding="utf-8")
-
-    support_candidates = (
-        ROOT / "4060ti" / "results",
-        ROOT / "4060ti" / "qwen3.5-397b-a17b",
-        ROOT / "4060ti" / "deepseek-v4.1-flash",
-        ROOT / "4060ti" / "GLM-5.2",
-        ROOT / "H800" / "SCOPE",
-    )
-    support_root = next(
-        (candidate for candidate in support_candidates if (candidate / "Makefile").is_file()),
-        None,
-    )
-    if support_root is None:
-        checked = ", ".join(str(candidate / "Makefile") for candidate in support_candidates)
-        raise FileNotFoundError(f"GPU bundle Makefile missing; checked: {checked}")
-    makefile_source = support_root / "Makefile"
-    makefile_text = makefile_source.read_text(encoding="utf-8")
-    dependency_names = " ".join(f"cuda_kernel_{size}.cuh" for size in sizes)
-    makefile_text = re.sub(
-        r"^DEPS\s*:=.*$",
-        f"DEPS := kernel.h kernel_variants.h {dependency_names}",
-        makefile_text,
-        count=1,
-        flags=re.MULTILINE,
-    )
-    makefile_text = re.sub(
-        r"^\.PHONY:.*$",
-        ".PHONY: all clean info " + " ".join(f"run-{size}" for size in sizes),
-        makefile_text,
-        count=1,
-        flags=re.MULTILINE,
-    )
-    makefile_text = re.sub(
-        r"(?m)^run-\d+: all\r?\n\t.*(?:\r?\n|$)",
-        "",
-        makefile_text,
-    ).rstrip()
-    run_targets = "\n".join(
-        f"run-{size}: all\n\t./$(TARGET_FILE) {size} {size} {size}"
-        for size in sizes
-    )
-    (result_dir / "Makefile").write_text(
-        makefile_text + "\n\n" + run_targets + "\n",
-        encoding="utf-8",
-    )
-    windows_build = support_root / "build_windows.bat"
-    if windows_build.is_file():
-        shutil.copyfile(windows_build, result_dir / "build_windows.bat")
+    (result_dir / "kernel_variants.h").write_text("\n".join(declarations) + "\n", encoding="utf-8")
+    (result_dir / "main.cpp").write_text(sources["main.cpp"], encoding="utf-8")
+    interface = re.sub(r'^\s*#\s*include\s*[<"]cuda_kernel\.cuh[>"]\s*$', "",
+                       sources["kernel.h"], flags=re.MULTILINE)
+    (result_dir / "kernel.h").write_text(interface, encoding="utf-8")
+    targets = _bundle_run_targets(shape_items)
+    for target, args in targets.items():
+        rules.extend([f"{target}: all", f"\t./$(TARGET_FILE) {args}"])
+    makefile = (template / "Makefile").read_text(encoding="utf-8")
+    makefile = makefile.replace("@VARIANT_OBJECTS@", " ".join(objects)).replace("@RUN_TARGETS@", " ".join(targets))
+    (result_dir / "Makefile").write_text(makefile + "\n" + "\n".join(rules) + "\n", encoding="utf-8")
+    shutil.copyfile(template / "build_windows.bat", result_dir / "build_windows.bat")
     return result_dir
 
 
@@ -692,6 +636,7 @@ def _publish_cpu_shape_bundle(
     (result_dir / "kernel_dispatch.c").write_text("\n".join(dispatch) + "\n", encoding="utf-8")
 
     object_names = ["main", "kernel_dispatch", *(f"cpu_kernel_{size}" for size in sizes)]
+    targets = _bundle_run_targets(shape_items)
     makefile_lines = [
         "TARGET ?= gemm_cpu",
         "BUILD_DIR ?= build",
@@ -717,7 +662,7 @@ def _publish_cpu_shape_bundle(
         "LDLIBS ?= -lm -fopenmp",
         "OBJECTS := " + " ".join(f"$(BUILD_DIR)/{name}.o" for name in object_names),
         "",
-        ".PHONY: all clean info " + " ".join(f"run-{size}" for size in sizes),
+        ".PHONY: all clean info " + " ".join(targets),
         "all: $(TARGET_FILE)",
         "info:",
         "\t@echo CC=$(CC)",
@@ -738,10 +683,10 @@ def _publish_cpu_shape_bundle(
         "$(TARGET_FILE): $(OBJECTS)",
         "\t$(CC) $(CFLAGS) $(OBJECTS) -o $@ $(LDLIBS)",
     ])
-    for size in sizes:
+    for target, args in targets.items():
         makefile_lines.extend([
-            f"run-{size}: all",
-            f"\t./$(TARGET_FILE) {size} {size} {size}",
+            f"{target}: all",
+            f"\t./$(TARGET_FILE) {args}",
         ])
     makefile_lines.extend(["clean:", "\t$(REMOVE_BUILD)"])
     (result_dir / "Makefile").write_text("\n".join(makefile_lines) + "\n", encoding="utf-8")
@@ -754,15 +699,18 @@ def publish_tuned_shape_bundle(
     shape_items: list[dict[str, Any]],
     backend: str,
 ) -> Path:
-    actual = tuple(int(item["shape"]["M"]) for item in shape_items)
+    actual = [tuple(item["shape"][axis] for axis in ("M", "N", "K")) for item in shape_items]
     square = all(
         item["shape"]["M"] == item["shape"]["N"] == item["shape"]["K"]
         for item in shape_items
     )
-    if not actual or len(set(actual)) != len(actual) or not square:
-        raise ValueError(f"Integrated {backend} bundle requires unique square shapes, got {actual}")
+    if not actual or len(set(actual)) != len(actual) or (backend == "cpu" and len(actual) > 1 and not square):
+        raise ValueError(f"Invalid or duplicate shape list for integrated {backend} bundle: {actual}")
     if any(item.get("status") != "completed" for item in shape_items):
         raise ValueError("Integrated bundle requires one verified Top-1 for every target shape")
+    if backend == "cuda":
+        shape_items = [dict(item, kernel_file=f"cuda_kernel_{bundle_shape_label(item['shape'])}.cuh")
+                       for item in shape_items]
     result_dir = (
         _publish_cpu_shape_bundle(output, sources, shape_items)
         if backend == "cpu"
@@ -773,6 +721,45 @@ def publish_tuned_shape_bundle(
         "shapes": shape_items,
     })
     return result_dir
+
+
+def load_tuned_candidate(
+    report: dict[str, Any], seed: dict[str, Any], problem: dict[str, Any],
+) -> dict[str, Any] | None:
+    """Load the verified Phase 3 winner for the shape requested by the pipeline."""
+    shape = {axis: problem[axis] for axis in ("M", "N", "K")}
+    winner = next((item for item in report.get("shapes", [])
+                   if item.get("shape") == shape and item.get("status") == "completed"), None)
+    if winner is None:
+        return None
+
+    folder, kernel, sources = read_sources(Path(winner["final_code_dir"]), report["backend"])
+    ir = json.loads((folder / "verified_ir.json").read_text(encoding="utf-8"))
+    record = json.loads((folder / "candidate.json").read_text(encoding="utf-8"))
+    if not passed(ir) or any(ir["problem"][axis] != size for axis, size in shape.items()):
+        raise ValueError(f"Phase 3 winner has no passing verification for {shape} in {folder}")
+    if hashlib.sha256(sources[kernel].encode()).hexdigest() != record["source_hash"]:
+        raise ValueError(f"Phase 3 kernel differs from the measured source in {folder}")
+    score = aggregate_value(ir, "gflops", report["aggregation"])
+    if score is None or score != winner["gflops"] or score != record["gflops"]:
+        raise ValueError(f"Phase 3 winner and verification disagree on GFLOPS in {folder}")
+
+    # Publish the statistic used to rank this shape; retain the individual statistics.
+    performance = ir["performance"]
+    performance.update(gflops=score, latency_ms=winner["latency_ms"],
+                       aggregation=report["aggregation"])
+    ratio = "relative_to_cpu_blas" if report["backend"] == "cpu" else "relative_to_cublas"
+    performance[ratio] = winner[ratio]
+    history = copy.deepcopy(seed.get("history") or {})
+    history.setdefault("events", []).append({
+        "stage": "FinalTop1ShapeTuning", "shape": shape, "tile": winner["tile"],
+        "padding_mode": winner["padding_mode"], "candidate_code_dir": str(folder),
+        "gflops": score,
+    })
+    return {**seed, "strategy_id": f"{seed['strategy_id']}.phase3_top1",
+            "candidate_code_dir": str(folder), "source_snapshot": sources,
+            "verified_ir": ir, "performance": performance, "history": history,
+            "source_phase": "final_top1_shape_tuning"}
 
 
 def tune_top1_shapes(
@@ -787,7 +774,7 @@ def tune_top1_shapes(
     warmup_runs: int,
     openblas_root: Path | None = None,
 ) -> dict[str, Any]:
-    """Expand one verified terminal winner into independently tuned shape winners."""
+    """Tune parameter combinations for the verified winner's exact problem dimensions."""
     phase_started = time.perf_counter()
     if backend not in {"cuda", "cpu"}:
         raise ValueError(f"Unsupported tuning backend: {backend}")
@@ -815,15 +802,10 @@ def tune_top1_shapes(
     if kernel not in sources or expected_harness not in sources:
         raise ValueError(f"Top-1 source snapshot must contain {kernel} and {expected_harness}")
 
-    default_shapes = (256, 512, 768, 1024) if backend == "cpu" else (512, 1024, 2048, 4096)
-    configured_shapes = config.get("cpu_shapes" if backend == "cpu" else "gpu_shapes", default_shapes)
-    shapes: list[tuple[int, int, int]] = []
-    for value in configured_shapes:
-        shape = (value, value, value) if isinstance(value, int) else tuple(value)
-        if len(shape) != 3 or any(not isinstance(item, int) or item <= 0 for item in shape):
-            raise ValueError(f"Final tuning shape must be a positive integer or M/N/K triple: {value}")
-        if shape not in shapes:
-            shapes.append(shape)
+    ir = clear_results(seed["verified_ir"])
+    shape = {axis: ir["problem"].get(axis) for axis in ("M", "N", "K")}
+    if any(type(value) is not int or value <= 0 for value in shape.values()):
+        raise ValueError(f"Final tuning requires positive integer M, N and K: {shape}")
 
     max_candidates = max(0, int(config.get("max_candidates_per_shape", 32)))
     rounds = max(1, int(config.get("rounds", 3)))
@@ -837,107 +819,96 @@ def tune_top1_shapes(
     final_remeasure_top_k = max(0, int(config.get("final_remeasure_top_k", 3)))
     padding_modes = tuple(config.get("padding_modes", ["original"]))
 
-    seed_ir = clear_results(seed["verified_ir"])
     report["seed_gflops"] = aggregate_value(seed["verified_ir"], "gflops", aggregation)
     report["max_candidates_per_shape"] = max_candidates
     report["aggregation"] = aggregation
-    for shape in shapes:
-        shape_started = time.perf_counter()
-        shape_name = "x".join(map(str, shape))
-        tuning_dir = output / shape_name / "search"
-        item: dict[str, Any] = {
-            "shape": dict(zip(("M", "N", "K"), shape)),
-            "tuning_dir": str(tuning_dir),
+    shape_started = time.perf_counter()
+    shape_name = "x".join(map(str, shape.values()))
+    tuning_dir = output / shape_name / "search"
+    item: dict[str, Any] = {
+        "shape": shape,
+        "tuning_dir": str(tuning_dir),
+    }
+    try:
+        common = {
+            "max_candidates": max_candidates,
+            "rounds": rounds,
+            "benchmark_runs": benchmark_runs,
+            "warmup_runs": warmup_runs,
+            "platform": platform,
+            "timeout": timeout,
+            "target_ratio": target_ratio,
+            "aggregation": aggregation,
         }
-        try:
-            ir = clear_results(seed_ir)
-            ir.setdefault("problem", {}).update(item["shape"])
-            common = {
-                "max_candidates": max_candidates,
-                "rounds": rounds,
-                "benchmark_runs": benchmark_runs,
-                "warmup_runs": warmup_runs,
-                "platform": platform,
-                "timeout": timeout,
-                "target_ratio": target_ratio,
-                "aggregation": aggregation,
-            }
-            if backend == "cpu":
-                common["openblas_root"] = openblas_root
-                common["screening_benchmark_runs"] = screening_benchmark_runs
-                common["screening_warmup_runs"] = screening_warmup_runs
-                common["final_remeasure_top_k"] = final_remeasure_top_k
-            else:
-                common["padding_modes"] = padding_modes
-                common["max_variant_compilations"] = max_candidates or None
-            tuned = tune_sources(
-                copy.deepcopy(sources), kernel, ir, library, tuning_dir,
-                backend=backend, **common,
+        if backend == "cpu":
+            common["openblas_root"] = openblas_root
+            common["screening_benchmark_runs"] = screening_benchmark_runs
+            common["screening_warmup_runs"] = screening_warmup_runs
+            common["final_remeasure_top_k"] = final_remeasure_top_k
+        else:
+            common["padding_modes"] = padding_modes
+            common["max_variant_compilations"] = max_candidates or None
+        tuned = tune_sources(
+            copy.deepcopy(sources), kernel, ir, library, tuning_dir,
+            backend=backend, **common,
+        )
+        winners = [
+            result for result in tuned.get("top_results", [])
+            if result.get("accepted") and result.get("gflops") is not None
+        ]
+        seed_result = next(
+            (result for result in tuned.get("results", []) if result.get("candidate_id") == 0),
+            {},
+        )
+        tested = int(tuned.get("tested_candidate_count", len(tuned.get("results", []))))
+        accepted = int(tuned.get("accepted_candidate_count", sum(
+            bool(result.get("accepted")) for result in tuned.get("results", [])
+        )))
+        item["seed_gflops"] = seed_result.get("gflops")
+        item["search_cost"] = {
+            "tested_candidates": tested,
+            "accepted_candidates": accepted,
+            "failed_candidates": int(tuned.get("failed_candidate_count", tested - accepted)),
+            "compile_attempts": int(tuned.get("compile_attempt_count", tested)),
+            "benchmark_process_runs": estimate_tuning_benchmark_process_runs(
+                tuned, backend, benchmark_runs, screening_benchmark_runs,
+                final_remeasure_top_k,
+            ),
+            "rounds_executed": len(tuned.get("rounds", [])),
+            "legal_candidates": tuned.get("legal_candidate_count"),
+            "budget_omitted_candidates": tuned.get("budget_omitted_count"),
+            "elapsed_seconds": tuned.get("elapsed_seconds"),
+        }
+        if not winners:
+            item.update(status="no_verified_result", stop_reason=tuned.get("stop_reason"))
+        else:
+            winner = max(winners, key=lambda result: float(result["gflops"]))
+            source_dir = Path(winner["code_dir"])
+            final_dir = output / shape_name / "top_1"
+            final_dir.mkdir(parents=True, exist_ok=False)
+            copied = []
+            for name in (*sources.keys(), "verified_ir.json", "candidate.json"):
+                shutil.copyfile(source_dir / name, final_dir / name)
+                copied.append(name)
+            item.update(
+                status="completed",
+                gflops=winner.get("gflops"),
+                source_hash=winner.get("source_hash"),
+                latency_ms=winner.get("latency_ms"),
+                relative_to_cublas=winner.get("relative_to_cublas"),
+                relative_to_cpu_blas=winner.get("relative_to_cpu_blas"),
+                tile=winner.get("tile"),
+                padding_mode=winner.get("padding_mode"),
+                final_code_dir=str(final_dir),
+                copied_files=copied,
+                stop_reason=tuned.get("stop_reason"),
             )
-            winners = [
-                result for result in tuned.get("top_results", [])
-                if result.get("accepted") and result.get("gflops") is not None
-            ]
-            seed_result = next(
-                (result for result in tuned.get("results", []) if result.get("candidate_id") == 0),
-                {},
-            )
-            tested = int(tuned.get("tested_candidate_count", len(tuned.get("results", []))))
-            accepted = int(tuned.get("accepted_candidate_count", sum(
-                bool(result.get("accepted")) for result in tuned.get("results", [])
-            )))
-            item["seed_gflops"] = seed_result.get("gflops")
-            item["search_cost"] = {
-                "tested_candidates": tested,
-                "accepted_candidates": accepted,
-                "failed_candidates": int(tuned.get("failed_candidate_count", tested - accepted)),
-                "compile_attempts": int(tuned.get("compile_attempt_count", tested)),
-                "benchmark_process_runs": estimate_tuning_benchmark_process_runs(
-                    tuned, backend, benchmark_runs, screening_benchmark_runs,
-                    final_remeasure_top_k,
-                ),
-                "rounds_executed": len(tuned.get("rounds", [])),
-                "legal_candidates": tuned.get("legal_candidate_count"),
-                "budget_omitted_candidates": tuned.get("budget_omitted_count"),
-                "elapsed_seconds": tuned.get("elapsed_seconds"),
-            }
-            if not winners:
-                item.update(status="no_verified_result", stop_reason=tuned.get("stop_reason"))
-            else:
-                winner = max(winners, key=lambda result: float(result["gflops"]))
-                source_dir = Path(winner["code_dir"])
-                final_dir = output / shape_name / "top_1"
-                final_dir.mkdir(parents=True, exist_ok=False)
-                copied = []
-                for name in (*sources.keys(), "verified_ir.json", "candidate.json"):
-                    source_file = source_dir / name
-                    if source_file.is_file():
-                        shutil.copyfile(source_file, final_dir / name)
-                        copied.append(name)
-                item.update(
-                    status="completed",
-                    gflops=winner.get("gflops"),
-                    latency_ms=winner.get("latency_ms"),
-                    relative_to_cublas=winner.get("relative_to_cublas"),
-                    relative_to_cpu_blas=winner.get("relative_to_cpu_blas"),
-                    tile=winner.get("tile"),
-                    padding_mode=winner.get("padding_mode"),
-                    final_code_dir=str(final_dir),
-                    copied_files=copied,
-                    stop_reason=tuned.get("stop_reason"),
-                )
-        except Exception as exc:
-            item.update(status="failed", error_type=type(exc).__name__, error=str(exc))
-        item["wallclock_seconds"] = round(time.perf_counter() - shape_started, 6)
-        report["shapes"].append(item)
-        write_json(output / "summary.json", report)
-    completed = sum(item.get("status") == "completed" for item in report["shapes"])
-    report["completed_shape_count"] = completed
-    report["status"] = (
-        "completed" if completed == len(report["shapes"])
-        else "partial_failure" if completed
-        else "failed"
-    )
+    except Exception as exc:
+        item.update(status="failed", error_type=type(exc).__name__, error=str(exc))
+    item["wallclock_seconds"] = round(time.perf_counter() - shape_started, 6)
+    report["shapes"].append(item)
+    report["completed_shape_count"] = int(item["status"] == "completed")
+    report["status"] = "completed" if report["completed_shape_count"] else "failed"
     report["elapsed_seconds"] = round(time.perf_counter() - phase_started, 6)
     if report["status"] == "completed":
         try:
