@@ -81,6 +81,7 @@ llm:
     max_retries: 5
 generation:
   # Each CUDA target gets an independent Phase 1-3 run. Order is [M, N, K].
+  # python app.py --config <this-file> runs all shapes once; reuse the printed batch name with --resume-batch.
   alias: gemm
   shapes: [[512, 512, 512], [1024, 1024, 1024], [2048, 2048, 2048]]
 execution:
@@ -89,6 +90,8 @@ execution:
   compile_workers: 2
   gpu_verification_workers: 1
 ablation:
+  # --ablation <variant> sets the switches below for every configured shape.
+  # YAML-only example: enabled: true, variant: minus_local_checks, local_checks: false.
   enabled: false
   run_id: null
   variant: full
